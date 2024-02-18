@@ -6,7 +6,9 @@ const jwt = require("jsonwebtoken");
 const socketIo = require("socket.io");
 require("dotenv").config();
 
-mongoose.connect("mongodb://127.0.0.1:27017/Farmers-Hub");
+mongoose.connect(
+  "mongodb+srv://davidodion898:Lelemembers1@cluster0.kk8xaer.mongodb.net/"
+);
 
 const User = require("./Models/Users");
 const Products = require("./Models/Products");
