@@ -58,7 +58,7 @@ const chatPort = process.env.chatPort;
 const server = http.createServer(app); // Create HTTP server
 const io = socketIo(server, {
   cors: {
-    origin: "https://agro-farmers-hub.vercel.app",
+    origin: "https://farmers-hub-backend.vercel.app",
   },
 });
 
