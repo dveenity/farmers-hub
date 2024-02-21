@@ -19,7 +19,7 @@ import {
 import { FaUserGear } from "react-icons/fa6";
 import { MdAttachEmail } from "react-icons/md";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 const Signup = () => {
   // react form
   const form = useForm();

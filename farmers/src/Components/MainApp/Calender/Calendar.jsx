@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 //axios to post form data
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import { useEffect, useState } from "react";
 import GoBack from "../../Custom/GoBack";
 

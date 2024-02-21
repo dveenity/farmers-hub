@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import GoBack from "../../../Custom/GoBack";
 import { CgNametag } from "react-icons/cg";
 import { MdDescription } from "react-icons/md";

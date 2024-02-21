@@ -12,7 +12,7 @@ import axios from "axios";
 import { FaEye, FaLock, FaRegEyeSlash } from "react-icons/fa";
 import { MdAttachEmail } from "react-icons/md";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const Login = () => {
   // react form

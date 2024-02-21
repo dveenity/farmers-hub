@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import Navigation from "../../Custom/Navigation";
 import Logout from "../../Custom/Logout";
 import { useCallback, useEffect, useState } from "react";

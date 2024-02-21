@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import Navigation from "../../Custom/Navigation";
 import { TbCurrencyNaira } from "react-icons/tb";
 

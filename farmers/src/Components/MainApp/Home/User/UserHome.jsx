@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdSpeedometer } from "react-icons/io";

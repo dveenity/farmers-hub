@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import { useState, useEffect, useRef } from "react";
 import GoBack from "../../../Custom/GoBack";
 import { IoIosSend } from "react-icons/io";

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import { FaCartPlus } from "react-icons/fa";
 import { RxActivityLog } from "react-icons/rx";
 import { BsArrowRight } from "react-icons/bs";

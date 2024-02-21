@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const serVer = `https://agro-hub-backend.onrender.com`;
+const serVer = `https://farmers-hub-backend.vercel.app`;
 import Clock from "../../Custom/Clock";
 import AdminHome from "./Admin/AdminHome";
 import Navigation from "../../Custom/Navigation";
