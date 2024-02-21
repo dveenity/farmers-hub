@@ -101,6 +101,11 @@ server.listen(chatPort, () => {
   console.log(`Chat is running on port ${chatPort}`);
 });
 
+// Define a default route handler for the root URL ("/")
+app.get("/", (req, res) => {
+  res.send("Hello, World! This is the root route.");
+});
+
 // server sign up handle signUp
 app.post("/register", async (req, res) => {
   const { name, username, password, email, role } = req.body;
