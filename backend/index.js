@@ -11,7 +11,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["https://agro-farmers-hub.vercel.app"],
+    origin: [
+      "https://agro-farmers-hub.vercel.app",
+      "https://farmers-hub-backend.vercel.app",
+    ],
     methods: ["POST", "GET"],
     credentials: true,
   })
@@ -52,6 +55,11 @@ const port = process.env.port;
 const createToken = (_id) => {
   return jwt.sign({ _id }, secretKey, { expiresIn: "7d" });
 };
+
+// Define a default route handler for the root URL ("/")
+app.get("/", (req, res) => {
+  res.send("Hello, World! This is the root route.");
+});
 
 // Chat Server
 const chatPort = process.env.chatPort;
@@ -105,11 +113,6 @@ io.on("connection", async (socket) => {
 
 server.listen(chatPort, () => {
   console.log(`Chat is running on port ${chatPort}`);
-});
-
-// Define a default route handler for the root URL ("/")
-app.get("/", (req, res) => {
-  res.send("Hello, World! This is the root route.");
 });
 
 // server sign up handle signUp
