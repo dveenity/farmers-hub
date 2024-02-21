@@ -13,6 +13,11 @@
   font-family: var(--font-family--two);
 }
 
+html {
+  overscroll-behavior: none;
+  height: min-content;
+}
+
 :root {
   --bg-color: rgb(0, 15, 0);
   --color: white;

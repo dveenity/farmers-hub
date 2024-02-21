@@ -84,12 +84,12 @@ const AdminHome = () => {
           <ul>
             <li>
               <Link to="/soldOrder">
-                Total sales<p>{salesLength}</p>
+                Total Sales<p>{salesLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/adminOrders">
-                Total Orders<p>{ordersLength}</p>
+                New Orders<p>{ordersLength}</p>
               </Link>
             </li>
             <li>
