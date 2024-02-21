@@ -5,7 +5,6 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const socketIo = require("socket.io");
 require("dotenv").config();
-const path = require("path");
 
 const app = express();
 app.use(express.json());
@@ -16,14 +15,6 @@ app.use(cors());
 const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-
-// Serve static files from the build folder
-app.use(express.static("build"));
-
-// Serve index.html for any other route
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve("build", "index.html"));
-});
 
 // cloudinary configurations
 const cloud_name = process.env.cloudinaryName;
