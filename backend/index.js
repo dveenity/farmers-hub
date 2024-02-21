@@ -4,12 +4,28 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const socketIo = require("socket.io");
+require("dotenv").config();
+const path = require("path");
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
 //images store path
 const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-require("dotenv").config();
 
+// Serve static files from the build folder
+app.use(express.static("build"));
+
+// Serve index.html for any other route
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve("build", "index.html"));
+});
+
+// cloudinary configurations
 const cloud_name = process.env.cloudinaryName;
 const api_key = process.env.cloudinaryApiKey;
 const api_secret = process.env.cloudinaryApiSecret;
@@ -23,6 +39,7 @@ cloudinary.config({
 const mongoUrl = process.env.mongodbLive;
 mongoose.connect(mongoUrl);
 
+// fetch models
 const User = require("./Models/Users");
 const Products = require("./Models/Products");
 const Orders = require("./Models/Orders");
@@ -38,11 +55,6 @@ const port = process.env.port;
 const createToken = (_id) => {
   return jwt.sign({ _id }, secretKey, { expiresIn: "7d" });
 };
-
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
 
 // Chat Server
 const chatPort = process.env.chatPort;
