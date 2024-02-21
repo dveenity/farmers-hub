@@ -8,17 +8,18 @@ const socketIo = require("socket.io");
 const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
+require("dotenv").config();
 
 const cloud_name = process.env.cloudinaryName;
 const api_key = process.env.cloudinaryApiKey;
 const api_secret = process.env.cloudinaryApiSecret;
+
+console.log(cloud_name);
 cloudinary.config({
   cloud_name,
   api_key,
   api_secret,
 });
-
-require("dotenv").config();
 
 const mongoUrl = process.env.mongodbLive;
 mongoose.connect(mongoUrl);
