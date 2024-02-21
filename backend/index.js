@@ -45,6 +45,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Chat Server
+const chatPort = process.env.chatPort;
 const server = http.createServer(app); // Create HTTP server
 const io = socketIo(server, {
   cors: {
@@ -93,8 +94,8 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(8800, () => {
-  console.log(`Chat is running on port 8800`);
+server.listen(chatPort, () => {
+  console.log(`Chat is running on port ${chatPort}`);
 });
 
 // server sign up handle signUp
