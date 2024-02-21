@@ -15,6 +15,8 @@ import { MdAttachEmail } from "react-icons/md";
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const Login = () => {
+  axios.defaults.withCredentials = true;
+
   // react form
   const form = useForm();
   const { register, handleSubmit, formState } = form;
