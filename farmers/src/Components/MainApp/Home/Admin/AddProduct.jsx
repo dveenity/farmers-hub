@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import GoBack from "../../../Custom/GoBack";
 
 import { CgNametag } from "react-icons/cg";
@@ -29,7 +31,7 @@ const AddProduct = () => {
   const token = localStorage.getItem("farm-users");
 
   useEffect(() => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
 
     // Fetch the user's role from the server
     const fetchUserRole = async () => {
@@ -54,7 +56,7 @@ const AddProduct = () => {
   const onSubmit = async (data) => {
     try {
       setSend(LoadingSpin);
-      const url = "http://localhost:7001/addProduct";
+      const url = `${serVer}/addProduct`;
       const { productName, productDescription, productPrice } = data;
 
       const formData = new FormData();

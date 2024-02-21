@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import { Link } from "react-router-dom";
 
 const AdminActivities = () => {
@@ -8,8 +10,8 @@ const AdminActivities = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = "http://localhost:7001/activitiesFetch";
-        const url2 = "http://localhost:7001/home";
+        const url = `${serVer}/activitiesFetch`;
+        const url2 = `${serVer}/home`;
 
         // Retrieve the token from local storage
         const token = localStorage.getItem("farm-users");

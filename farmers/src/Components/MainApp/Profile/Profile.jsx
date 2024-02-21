@@ -1,4 +1,6 @@
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import Navigation from "../../Custom/Navigation";
 import Logout from "../../Custom/Logout";
 import { useCallback, useEffect, useState } from "react";
@@ -38,7 +40,7 @@ const Profile = () => {
 
   // Fetch the user's details from the server
   const fetchUser = useCallback(async () => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
     try {
       const response = await axios.get(url, {
         headers: {
@@ -82,7 +84,7 @@ const Profile = () => {
 
   // edit and save new profile edit
   const onSubmit = async (data) => {
-    const url = "http://localhost:7001/update-profile";
+    const url = `${serVer}/update-profile`;
     const { name, street, state, country, phone } = data;
 
     try {

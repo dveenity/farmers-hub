@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+const serVer = `https://agro-hub-backend.onrender.com`;
+
 const AdminSold = () => {
   const [adminSoldProducts, setAdminSoldProducts] = useState([]);
   const [adminId, setAdminId] = useState(null); // admin ID
@@ -10,7 +12,7 @@ const AdminSold = () => {
     // Fetch admin ID
     const fetchAdminId = async () => {
       try {
-        const response = await axios.get("http://localhost:7001/home", {
+        const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -30,14 +32,11 @@ const AdminSold = () => {
     // Fetch sold products associated with the admin ID
     const fetchAdminSoldProducts = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:7001/delivered/${adminId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${serVer}/delivered/${adminId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const { data } = response;
         setAdminSoldProducts(data);

@@ -7,6 +7,8 @@ import { useForm } from "react-hook-form";
 
 //axios to post form data
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import { useEffect, useState } from "react";
 import GoBack from "../../Custom/GoBack";
 
@@ -29,7 +31,7 @@ const ProductCalendar = () => {
   const { errors, isSubmitting } = formState;
 
   useEffect(() => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
 
     // Retrieve the token from local storage
     const token = localStorage.getItem("farm-users");
@@ -56,7 +58,7 @@ const ProductCalendar = () => {
   }, []);
 
   useEffect(() => {
-    const url = "http://localhost:7001/calendar";
+    const url = `${serVer}/calendar`;
 
     // Fetch calendar from DB
     const fetchCalendar = async () => {
@@ -85,7 +87,7 @@ const ProductCalendar = () => {
   const onSubmit = async (data) => {
     try {
       const { productName, startDate, endDate } = data;
-      const url = "http://localhost:7001/productCalender";
+      const url = `${serVer}/productCalender`;
 
       await axios.post(url, { username, productName, startDate, endDate });
 
@@ -103,7 +105,7 @@ const ProductCalendar = () => {
   const deleteCalenderProduct = async (calendarProducts) => {
     const calenderProductId = calendarProducts._id;
     try {
-      const url = "http://localhost:7001/deleteCalendar";
+      const url = `${serVer}/deleteCalendar`;
       const deleteResponse = await axios.delete(url, { calenderProductId });
 
       console.log(deleteResponse);

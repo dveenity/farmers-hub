@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import GoBack from "../../../Custom/GoBack";
 import { CgNametag } from "react-icons/cg";
 import { MdDescription } from "react-icons/md";
@@ -28,7 +30,7 @@ const AddActivity = () => {
       setSend(LoadingSpin);
       // Retrieve the token from local storage
       const token = localStorage.getItem("farm-users");
-      const url = "http://localhost:7001/addActivity";
+      const url = `${serVer}/addActivity`;
       const { activityName, activityDescription } = data;
 
       const formData = new FormData();

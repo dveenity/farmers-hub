@@ -12,6 +12,8 @@ import axios from "axios";
 import { FaEye, FaLock, FaRegEyeSlash } from "react-icons/fa";
 import { MdAttachEmail } from "react-icons/md";
 
+const serVer = `https://agro-hub-backend.onrender.com`;
+
 const Login = () => {
   // react form
   const form = useForm();
@@ -25,7 +27,7 @@ const Login = () => {
   const { dispatch } = useAuthContext();
 
   const onSubmit = async (data) => {
-    const url = "http://localhost:7001/login";
+    const url = `${serVer}/login`;
 
     try {
       // Reset error messages

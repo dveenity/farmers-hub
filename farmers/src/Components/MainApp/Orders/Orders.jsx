@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import Navigation from "../../Custom/Navigation";
 import { FcIdea } from "react-icons/fc";
 import { TbCurrencyNaira } from "react-icons/tb";
@@ -14,7 +16,7 @@ const Orders = () => {
     const fetchUserData = async () => {
       try {
         const token = localStorage.getItem("farm-users");
-        const response = await axios.get("http://localhost:7001/home", {
+        const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -35,7 +37,7 @@ const Orders = () => {
     try {
       if (!userId) return;
 
-      const url = `http://localhost:7001/ordersUser/${userId}`;
+      const url = `${serVer}/ordersUser/${userId}`;
 
       const response = await axios.get(url);
       const { data } = response;
@@ -75,7 +77,7 @@ const Orders = () => {
 
   const handleCancelOrder = async () => {
     try {
-      const url = `http://localhost:7001/order/${orderIdToDelete}`;
+      const url = `${serVer}/order/${orderIdToDelete}`;
       const response = await axios.delete(url);
 
       if (response.status === 200) {

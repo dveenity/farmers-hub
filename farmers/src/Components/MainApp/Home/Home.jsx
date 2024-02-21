@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import Clock from "../../Custom/Clock";
 import AdminHome from "./Admin/AdminHome";
 import Navigation from "../../Custom/Navigation";
@@ -11,7 +13,7 @@ const Home = () => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
 
     // Retrieve the token from local storage
     const token = localStorage.getItem("farm-users");

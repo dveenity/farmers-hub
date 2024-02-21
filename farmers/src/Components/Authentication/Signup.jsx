@@ -19,6 +19,7 @@ import {
 import { FaUserGear } from "react-icons/fa6";
 import { MdAttachEmail } from "react-icons/md";
 
+const serVer = `https://agro-hub-backend.onrender.com`;
 const Signup = () => {
   // react form
   const form = useForm();
@@ -32,7 +33,7 @@ const Signup = () => {
   const { dispatch } = useAuthContext();
 
   const onSubmit = async (data) => {
-    const url = "http://localhost:7001/register";
+    const url = `${serVer}/register`;
 
     try {
       // Reset error messages

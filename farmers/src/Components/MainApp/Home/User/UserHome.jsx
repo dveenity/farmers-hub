@@ -1,4 +1,6 @@
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdSpeedometer } from "react-icons/io";
@@ -13,10 +15,10 @@ const UserHome = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = "http://localhost:7001/productsFetch";
-        const url2 = "http://localhost:7001/home";
-        const url3 = `http://localhost:7001/ordersUser/${userId}`;
-        const url4 = `http://localhost:7001/purchased/${userId}`;
+        const url = `${serVer}/productsFetch`;
+        const url2 = `${serVer}/home`;
+        const url3 = `${serVer}/ordersUser/${userId}`;
+        const url4 = `${serVer}/purchased/${userId}`;
 
         // Retrieve the token from local storage
         const token = localStorage.getItem("farm-users");

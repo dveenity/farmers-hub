@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import GoBack from "../../Custom/GoBack";
 import { TbCurrencyNaira } from "react-icons/tb";
 
@@ -13,7 +15,7 @@ const Purchases = () => {
     // Fetch admin ID
     const fetchUserId = async () => {
       try {
-        const response = await axios.get("http://localhost:7001/home", {
+        const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -33,14 +35,11 @@ const Purchases = () => {
   const fetchUserPurchases = useCallback(async () => {
     const token = localStorage.getItem("farm-users");
     try {
-      const response = await axios.get(
-        `http://localhost:7001/purchased/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${serVer}/purchased/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const { data } = response;
 

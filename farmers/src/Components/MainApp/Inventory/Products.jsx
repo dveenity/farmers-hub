@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import Navigation from "../../Custom/Navigation";
 import { TbCurrencyNaira } from "react-icons/tb";
 
@@ -24,7 +26,7 @@ const Products = () => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
 
     // Retrieve the token from local storage
     const token = localStorage.getItem("farm-users");
@@ -51,7 +53,7 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const url = "http://localhost:7001/productsFetch";
+      const url = `${serVer}/productsFetch`;
 
       // Retrieve the token from local storage
       const token = localStorage.getItem("farm-users");
@@ -134,10 +136,7 @@ const Products = () => {
       };
 
       // Send a request to your server to add the order to the user's order history
-      const orderResponse = await axios.post(
-        "http://localhost:7001/orders",
-        orderData
-      );
+      const orderResponse = await axios.post(`${serVer}/orders`, orderData);
 
       // Check if the order was successfully added
       if (orderResponse.status === 200) {
@@ -155,7 +154,7 @@ const Products = () => {
   // function delete product per poster request
   const handleDelete = async () => {
     try {
-      const url = `http://localhost:7001/product/${productId}`;
+      const url = `${serVer}/product/${productId}`;
 
       // Send delete request to the server
       const response = await axios.delete(url);

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import GoBack from "../../Custom/GoBack";
 import LoadingSpin from "../../Custom/LoadingSpin";
 
@@ -17,7 +19,7 @@ const AdminOrders = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get("http://localhost:7001/home", {
+        const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -37,14 +39,11 @@ const AdminOrders = () => {
   const fetchOrdersNotifications = async () => {
     try {
       const token = localStorage.getItem("farm-users");
-      const response = await axios.get(
-        `http://localhost:7001/orders/${adminId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${serVer}/orders/${adminId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const { data } = response;
       setNotificationTotal(data.length);
       setAdminOrders(data);
@@ -64,15 +63,13 @@ const AdminOrders = () => {
       } // Return if no order or status selected
 
       // Send request to update order status
-      await axios.put(`http://localhost:7001/orders/${selectedOrder._id}`, {
+      await axios.put(`${serVer}/orders/${selectedOrder._id}`, {
         status: selectedStatus,
       });
 
       // If status is "Delivered", move product to delivered schema
       if (selectedStatus === "Delivered") {
-        await axios.put(
-          `http://localhost:7001/deliver-product/${selectedOrder._id}`
-        );
+        await axios.put(`${serVer}/deliver-product/${selectedOrder._id}`);
 
         setResult("Order moved to Sold");
 

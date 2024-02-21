@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import Navigation from "../../Custom/Navigation";
 
 const Activities = () => {
@@ -18,7 +20,7 @@ const Activities = () => {
 
   // fetch user name and store in state
   useEffect(() => {
-    const url = "http://localhost:7001/home";
+    const url = `${serVer}/home`;
 
     // Fetch the user's role from the server
     const fetchUserRole = async () => {
@@ -41,7 +43,7 @@ const Activities = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const url = "http://localhost:7001/activitiesFetch";
+      const url = `${serVer}/activitiesFetch`;
 
       // Fetch products from the server
       const response = await axios.post(url, null, {
@@ -87,7 +89,7 @@ const Activities = () => {
   // handle activity delete
   const handleDelete = async () => {
     try {
-      const url = `http://localhost:7001/activity/${activityId}`;
+      const url = `${serVer}/activity/${activityId}`;
 
       // Send delete request to the server
       const response = await axios.delete(url);

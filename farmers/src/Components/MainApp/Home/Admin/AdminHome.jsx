@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+
+const serVer = `https://agro-hub-backend.onrender.com`;
 import { FaCartPlus } from "react-icons/fa";
 import { RxActivityLog } from "react-icons/rx";
 import { BsArrowRight } from "react-icons/bs";
@@ -14,9 +16,9 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const url = "http://localhost:7001/productsFetch";
-        const url2 = "http://localhost:7001/home";
-        const url3 = `http://localhost:7001/orders/${adminId}`;
+        const url = `${serVer}/productsFetch`;
+        const url2 = `${serVer}/home`;
+        const url3 = `${serVer}/orders/${adminId}`;
 
         // Retrieve the token from local storage
         const token = localStorage.getItem("farm-users");
@@ -58,14 +60,11 @@ const AdminHome = () => {
         setOrdersLength(allOrders.length);
 
         // fetch sold length from delivered schema
-        const responseSold = await axios.get(
-          `http://localhost:7001/delivered/${adminId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const responseSold = await axios.get(`${serVer}/delivered/${adminId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const { data } = responseSold;
         setSalesLength(data.length);
