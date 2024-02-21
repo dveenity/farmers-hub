@@ -173,7 +173,7 @@ html {
   border: 3px solid var(--main-color);
   margin: 0 auto;
   padding: 1rem 0.5rem;
-  max-width: 300px;
+  max-width: 80vw;
   max-height: 80vh;
 }
 
