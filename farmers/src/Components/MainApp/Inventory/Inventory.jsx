@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Products from "./Products";
 import Activities from "./Activities";
+import { FaCartShopping } from "react-icons/fa6";
+import { RxActivityLog } from "react-icons/rx";
+import { FcIdea } from "react-icons/fc";
 
 const Inventory = () => {
   const [isProductsView, setIsProductsView] = useState(true);
@@ -18,10 +21,22 @@ const Inventory = () => {
   };
 
   return (
-    <div>
-      {/* Button to switch between products and activities views */}
-      <button onClick={toggleProducts}>Products</button>
-      <button onClick={toggleActivity}>Activities</button>
+    <div className="inventory">
+      <div className="tip">
+        <FcIdea />
+        <p>Tip: Click to toggle products & activities view</p>
+      </div>
+      <div className="inventory-switch">
+        {/* Button to switch between products and activities views */}
+        <button onClick={toggleProducts}>
+          Products
+          <FaCartShopping />
+        </button>
+        <button onClick={toggleActivity}>
+          Activities
+          <RxActivityLog />
+        </button>
+      </div>
 
       {/* Render Products or Activities based on the selected view */}
       {isProductsView && <Products />}

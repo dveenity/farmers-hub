@@ -4,11 +4,21 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const socketIo = require("socket.io");
+//images store path
+const fs = require("fs");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: "dz062nei1",
+  api_key: "666677851628915",
+  api_secret: "5O5DLft-9cEUoj6tEF0pFbEuswg",
+});
+
 require("dotenv").config();
 
-mongoose.connect(
-  "mongodb+srv://davidodion898:Lelemembers1@cluster0.kk8xaer.mongodb.net/"
-);
+const mongoUrl = process.env.mongodbLive;
+mongoose.connect(mongoUrl);
 
 const User = require("./Models/Users");
 const Products = require("./Models/Products");
@@ -196,11 +206,25 @@ app.put("/update-profile", async (req, res) => {
   }
 });
 
-// add farmer new product to database
-app.post("/addProduct", async (req, res) => {
+// Create multer storage for storing images
+const storage = multer.diskStorage({
+  // We won't use disk storage, as we'll upload directly to Cloudinary
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+// Initialize multer upload
+const upload = multer({ storage: storage });
+
+// Add farmer new product to database
+app.post("/addProduct", upload.single("image"), async (req, res) => {
   try {
     const userId = req.userId;
     const { productName, productDescription, productPrice } = req.body;
+
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
 
     // Retrieve the user's role from the database using the decoded user ID
     const user = await User.findById(userId);
@@ -215,15 +239,57 @@ app.post("/addProduct", async (req, res) => {
       name: productName,
       description: productDescription,
       price: productPrice,
+      image: result.secure_url, // Use the URL provided by Cloudinary
       time: new Date(), // Set current time directly here
     });
 
     // Save the new product to the database
     await newProduct.save();
 
+    // Delete the temporary file from the server
+    fs.unlinkSync(req.file.path);
+
     res.status(201).send({ message: "Product added successfully" });
   } catch (error) {
     console.error("Error adding product:", error);
+    res.status(500).send("Internal server error.");
+  }
+});
+
+// add farmer new activity to database
+app.post("/addActivity", upload.single("image"), async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { activityName, activityDescription } = req.body;
+
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path);
+
+    // Retrieve the user's role from the database using the decoded user ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Create a new activity document
+    const newProduct = new Activity({
+      username: user.username,
+      name: activityName,
+      description: activityDescription,
+      image: result.secure_url, // Use the URL provided by Cloudinary
+      time: new Date(), // Set current time directly here
+    });
+
+    // Save the new activity to the database
+    await newProduct.save();
+
+    // Delete the temporary file from the server
+    fs.unlinkSync(req.file.path);
+
+    res.status(201).send({ message: "Activity added successfully" });
+  } catch (error) {
+    console.error("Error adding activity:", error);
     res.status(500).send("Internal server error.");
   }
 });
@@ -274,11 +340,32 @@ app.delete("/product/:productId", async (req, res) => {
   }
 });
 
+// delete activity from db per admin request
+app.delete("/activity/:activityId", async (req, res) => {
+  try {
+    const activityId = req.params.activityId;
+
+    // Use Mongoose to delete the activity from the database
+    await Activity.findByIdAndDelete(activityId);
+    res.sendStatus(200); // Send a success status code
+  } catch (error) {
+    console.error("Error deleting activity:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Endpoint for adding orders
 app.post("/orders", async (req, res) => {
   try {
     // Extract order details from the request body
-    const { username, productId, productName, productPrice } = req.body;
+    const {
+      username,
+      productId,
+      productName,
+      productPrice,
+      productImage,
+      userAddress,
+    } = req.body;
 
     // Ensure all required fields are present in the request body
     if (!username || !productId || !productName || !productPrice) {
@@ -292,7 +379,9 @@ app.post("/orders", async (req, res) => {
       productName,
       price: productPrice,
       time: new Date(),
+      image: productImage,
       status: "Pending", // Default status is 'Pending'
+      userDeliveryDetails: userAddress,
       notifications: [],
       // Include any other relevant order details
     });
@@ -400,6 +489,7 @@ app.put("/deliver-product/:productId", async (req, res) => {
       productName: product.productName,
       price: product.price,
       time: new Date(),
+      image: product.image,
       status: "Delivered",
       productOwner: ownerName, // Use the retrieved owner's name
     });
@@ -423,7 +513,11 @@ app.get("/delivered/:adminId", async (req, res) => {
     const userId = req.params.adminId;
 
     // Find delivered products associated with the user ID
-    const deliveredProducts = await Delivered.find({ productOwner: userId });
+    const deliveredProducts = await Delivered.find({
+      productOwner: userId,
+    }).sort({
+      time: -1,
+    }); // Sort by time in descending order;
 
     res.status(200).json(deliveredProducts);
   } catch (error) {
@@ -438,7 +532,9 @@ app.get("/purchased/:userId", async (req, res) => {
     const userId = req.params.userId;
 
     // Find delivered products associated with the user ID
-    const deliveredProducts = await Delivered.find({ username: userId });
+    const deliveredProducts = await Delivered.find({ username: userId }).sort({
+      time: -1,
+    }); // Sort by time in descending order;
 
     res.status(200).json(deliveredProducts);
   } catch (error) {
@@ -500,37 +596,6 @@ app.put("/:orderId", async (req, res) => {
   } catch (error) {
     console.error("Error updating order status:", error);
     res.status(500).json({ error: "Internal Server Error" });
-  }
-});
-
-// add farmer new activity to database
-app.post("/addActivity", async (req, res) => {
-  try {
-    const userId = req.userId;
-    const { activityName, activityDescription } = req.body;
-
-    // Retrieve the user's role from the database using the decoded user ID
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).send({ message: "User not found" });
-    }
-
-    // Create a new activity document
-    const newProduct = new Activity({
-      username: user.username,
-      name: activityName,
-      description: activityDescription,
-      time: new Date(), // Set current time directly here
-    });
-
-    // Save the new activity to the database
-    await newProduct.save();
-
-    res.status(201).send({ message: "Product added successfully" });
-  } catch (error) {
-    console.error("Error adding product:", error);
-    res.status(500).send("Internal server error.");
   }
 });
 

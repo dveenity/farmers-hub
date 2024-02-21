@@ -22,8 +22,16 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
+    required: true,
+  },
+  userDeliveryDetails: {
+    type: Object,
     required: true,
   },
   notifications: [{ message: String, ownerId: String, status: String }], // Array of notifications

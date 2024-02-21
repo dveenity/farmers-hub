@@ -22,6 +22,10 @@ const deliveredSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  image: {
+    type: String,
+    required: true,
+  },
   status: {
     type: String,
     required: true,

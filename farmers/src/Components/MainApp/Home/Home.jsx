@@ -3,7 +3,7 @@ import axios from "axios";
 import Clock from "../../Custom/Clock";
 import AdminHome from "./Admin/AdminHome";
 import Navigation from "../../Custom/Navigation";
-import { Link } from "react-router-dom";
+import UserHome from "./User/UserHome";
 
 const Home = () => {
   // State to store the user's role
@@ -27,7 +27,7 @@ const Home = () => {
 
         const { data } = response;
         setRole(data.role);
-        setUsername(data.username);
+        setUsername(data.name.split(" ")[0]);
       } catch (error) {
         console.error("Error fetching user", error);
         setRole(error.data.role);
@@ -38,29 +38,15 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <div>
+    <div className="home">
+      <div className="home-greet">
         <Clock />
-        <span>{username}</span>
-        <h2>Welcome to the Farmer&apos;s Hub</h2>
+        <h2>Hi, {username}</h2>
+        <h3>Agro Farmer&apos;s Hub</h3>
       </div>
-      {role === "user" && (
-        <div>
-          {/* Content for regular users */}
-          <p>
-            Welcome, regular user! You can view and manage your account here.
-          </p>
-        </div>
-      )}
+      {role === "user" && <UserHome />}
       {/* Content for Admin/Farmers users */}
       {role === "admin" && <AdminHome />}
-      {role !== "user" && role !== "admin" && (
-        <div>
-          {/* Error message for unknown roles */}
-          <p>Unauthorized access or role not recognized.</p>
-        </div>
-      )}
-      <Link to="/calendar">View Calender</Link>
       <Navigation />
     </div>
   );

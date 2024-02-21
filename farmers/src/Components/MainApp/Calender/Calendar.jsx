@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 //axios to post form data
 import axios from "axios";
 import { useEffect, useState } from "react";
+import GoBack from "../../Custom/GoBack";
 
 const ProductCalendar = () => {
   const localizer = momentLocalizer(moment);
@@ -117,7 +118,8 @@ const ProductCalendar = () => {
 
   // Render the calendar
   return (
-    <div>
+    <div className="calendar">
+      <GoBack />
       <h2>Product Availability Calendar</h2>
       <Calendar
         localizer={localizer}

@@ -5,17 +5,16 @@ import Signup from "./Components/Authentication/Signup";
 import Login from "./Components/Authentication/Login";
 import Home from "./Components/MainApp/Home/Home";
 import Inventory from "./Components/MainApp/Inventory/Inventory";
-import ProductDetails from "./Components/MainApp/Inventory/ProductDetails";
 import Orders from "./Components/MainApp/Orders/Orders";
 import Profile from "./Components/MainApp/Profile/Profile";
 import AddProduct from "./Components/MainApp/Home/Admin/AddProduct";
 import AddActivity from "./Components/MainApp/Home/Admin/AddActivity";
 import AdminProducts from "./Components/MainApp/Inventory/AdminProducts";
 import AdminActivities from "./Components/MainApp/Inventory/AdminActivities";
-import AdminOrders from "./Components/MainApp/Home/Admin/AdminOrders";
+import AdminOrders from "./Components/MainApp/Orders/AdminOrders";
 import ProductCalendar from "./Components/MainApp/Calender/Calendar";
 import AdminSold from "./Components/MainApp/Home/Admin/AdminSold";
-import Purchases from "./Components/MainApp/Profile/Purchases";
+import Purchases from "./Components/MainApp/Home/Purchases";
 import Chat from "./Components/MainApp/Profile/Chat/Chat";
 
 function App() {
@@ -62,7 +61,6 @@ function App() {
             path="/adminActivities"
             element={user ? <AdminActivities /> : <Navigate to="/Login" />}
           />
-          <Route path="/product/:productId" element={<ProductDetails />} />
           <Route path="/adminOrders" element={<AdminOrders />} />
           <Route path="/soldOrder" element={<AdminSold />} />
           <Route path="/purchases" element={<Purchases />} />

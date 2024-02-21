@@ -1,5 +1,7 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import GoBack from "../../../Custom/GoBack";
+import { IoIosSend } from "react-icons/io";
 import io from "socket.io-client";
 
 const socket = io("http://localhost:8800");
@@ -7,6 +9,7 @@ const socket = io("http://localhost:8800");
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef(null);
 
   const [username, setUsername] = useState("");
 
@@ -37,26 +40,6 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch previous messages only when component mounts on the chat route
-    const fetchPreviousMessages = async () => {
-      // Emit event to request previous messages from the server
-      socket.emit("previousMessages");
-
-      // Listen for previous messages
-      socket.on("previousMessages", (previousMessages) => {
-        setMessages(previousMessages);
-      });
-    };
-
-    fetchPreviousMessages();
-
-    // Clean up event listener
-    return () => {
-      socket.off("previousMessages");
-    };
-  }, []); // Only run once when component mounts
-
-  useEffect(() => {
     // Fetch previous messages when component mounts
     socket.emit("previousMessages"); // Emit event to request previous messages from the server
 
@@ -69,12 +52,6 @@ const Chat = () => {
     socket.on("receiveMessage", (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
-
-    return () => {
-      // Clean up event listeners
-      socket.off("previousMessages");
-      socket.off("receiveMessage");
-    };
   }, []);
 
   const sendMessage = () => {
@@ -85,33 +62,57 @@ const Chat = () => {
     setInputValue("");
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
   return (
-    <div>
-      <div className="messageBox">
-        {/* Display previous messages */}
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            style={{
-              textAlign: message.sender === username ? "right" : "left",
-              padding: "5px",
-            }}>
-            {/* Display username only for other users' messages */}
-            {message.sender !== username && (
-              <div style={{ fontWeight: "bold" }}>{message.sender}</div>
-            )}
-            {message.content}
-          </div>
-        ))}
-      </div>
+    <div className="chatBox">
       <div>
-        {/* Input field for new message */}
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
-        <button onClick={sendMessage}>Send</button>
+        <GoBack />
+        <div className="messageBox" style={{ position: "relative" }}>
+          {/* Display previous messages */}
+          {messages.map((message) => (
+            <div
+              className="messageBox-in"
+              key={message._id}
+              style={{
+                position: "relative",
+                backgroundColor:
+                  message.sender === username ? "#00250e" : "green",
+                marginLeft: message.sender === username ? "auto" : "0", // Stick to right if user is the sender
+                marginRight: message.sender !== username ? "auto" : "0", // Stick to left if user is not the sender
+              }}>
+              {/* Display username only for other users' messages */}
+              <div className="messageUser">
+                {message.sender !== username && <div>{message.sender}:</div>}
+                {/* Display message content */}
+                <span>{message.content}</span>
+              </div>
+              {/* Display timestamp */}
+              <p>{new Date(message.timestamp).toLocaleString()}</p>
+
+              {/* Ref for scrolling to bottom */}
+              <div ref={messagesEndRef} />
+            </div>
+          ))}
+        </div>
+        <div className="sendBox">
+          {/* Input field for new message */}
+          <input
+            type="text"
+            value={inputValue}
+            placeholder="Send a new Message"
+            onChange={(e) => setInputValue(e.target.value)}
+          />
+          <button onClick={sendMessage}>
+            <IoIosSend />
+          </button>
+        </div>
       </div>
     </div>
   );

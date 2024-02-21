@@ -9,7 +9,8 @@ import { useForm } from "react-hook-form";
 //axios to post form data
 import axios from "axios";
 
-import { FaEye, FaRegEyeSlash } from "react-icons/fa";
+import { FaEye, FaLock, FaRegEyeSlash } from "react-icons/fa";
+import { MdAttachEmail } from "react-icons/md";
 
 const Login = () => {
   // react form
@@ -60,7 +61,11 @@ const Login = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          setResultMessage(error.response.data);
+
+          setTimeout(() => {
+            setResultMessage("");
+          }, 3000);
         });
     } catch (error) {
       setResultMessage("cant connect to server, try again later");
@@ -91,49 +96,59 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h3>Log In</h3>
-      <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
-        <div className="inputBox">
-          <label htmlFor="email">Email</label>
-          <input
-            required
-            type="email"
-            id="email"
-            {...register("email", { required: "Email is required" })}
-          />
-          <p>{errors.email?.message}</p>
-        </div>
-        {/* Password input */}
-        <div className="inputBox">
-          <label htmlFor="password">Password</label>
-          <div className="inputBox-in">
-            <input
-              required
-              type={passwordVisible ? "text" : "password"}
-              id="password"
-              {...register("password", {
-                required: "Password is required",
-              })}
-            />
-            {/* Toggle password visibility button */}
-            <div
-              className="toggle"
-              type="button"
-              onClick={togglePasswordVisibility}>
-              {passwordVisible ? <FaRegEyeSlash /> : <FaEye />}
+    <div className="authentication">
+      <div>
+        <h3>Log In</h3>
+        <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
+          <div className="inputBox">
+            <label htmlFor="email">
+              <MdAttachEmail />
+            </label>
+            <div className="inputBox-in">
+              <input
+                required
+                type="email"
+                id="email"
+                {...register("email", { required: "Email is required" })}
+              />
+              <span>Email</span>
+              <p>{errors.email?.message}</p>
             </div>
-            <p>{errors.password?.message}</p>
           </div>
+          {/* Password input */}
+          <div className="inputBox">
+            <label htmlFor="password">
+              <FaLock />
+            </label>
+            <div className="inputBox-in">
+              <input
+                required
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                {...register("password", {
+                  required: "Password is required",
+                })}
+              />
+              <span>Password</span>
+              {/* Toggle password visibility button */}
+              <div
+                className="toggle"
+                type="button"
+                onClick={togglePasswordVisibility}>
+                {passwordVisible ? <FaRegEyeSlash /> : <FaEye />}
+              </div>
+              <p>{errors.password?.message}</p>
+            </div>
+          </div>
+          <button type="submit" disabled={isSubmitting || isLoading}>
+            {send}
+          </button>
+        </form>
+        <p className="result">{resultMessage}</p>
+        <div className="sign-log">
+          <p>New Here?</p>
+          <Link to="/signup">Sign Up</Link>
         </div>
-        <button type="submit" disabled={isSubmitting || isLoading}>
-          {send}
-        </button>
-      </form>
-      <p className="result">{resultMessage}</p>
-      <div className="sign-log">
-        <p>New Here?</p>
-        <Link to="/signup">Sign Up</Link>
       </div>
     </div>
   );

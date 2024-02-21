@@ -1,4 +1,4 @@
-import { BsArrowBarLeft } from "react-icons/bs";
+import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 
 const GoBack = () => {
@@ -9,8 +9,8 @@ const GoBack = () => {
     navigate(-1);
   };
   return (
-    <button>
-      <BsArrowBarLeft onClick={goBack} />
+    <button className="goBack" onClick={goBack}>
+      <IoArrowBackCircleOutline />
     </button>
   );
 };

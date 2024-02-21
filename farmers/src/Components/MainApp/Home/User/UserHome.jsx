@@ -1,22 +1,22 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
-import { FaCartPlus } from "react-icons/fa";
-import { RxActivityLog } from "react-icons/rx";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { IoMdSpeedometer } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
 
-const AdminHome = () => {
+const UserHome = () => {
   const [salesLength, setSalesLength] = useState();
   const [inventoryProducts, setInventoryProducts] = useState();
   const [ordersLength, setOrdersLength] = useState();
-  const [adminId, setAdminId] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const url = "http://localhost:7001/productsFetch";
         const url2 = "http://localhost:7001/home";
-        const url3 = `http://localhost:7001/orders/${adminId}`;
+        const url3 = `http://localhost:7001/ordersUser/${userId}`;
+        const url4 = `http://localhost:7001/purchased/${userId}`;
 
         // Retrieve the token from local storage
         const token = localStorage.getItem("farm-users");
@@ -39,13 +39,9 @@ const AdminHome = () => {
         });
 
         const loggedInUser = responseId.data;
-        setAdminId(loggedInUser.username);
+        setUserId(loggedInUser.username);
 
-        //Filter products based on the username
-        const filteredProducts = allProducts.filter(
-          (product) => product.username === adminId
-        );
-        setInventoryProducts(filteredProducts.length);
+        setInventoryProducts(allProducts.length);
 
         // Fetch orders from the server
         const responseOrder = await axios.get(url3, {
@@ -58,14 +54,11 @@ const AdminHome = () => {
         setOrdersLength(allOrders.length);
 
         // fetch sold length from delivered schema
-        const responseSold = await axios.get(
-          `http://localhost:7001/delivered/${adminId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const responseSold = await axios.get(url4, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const { data } = responseSold;
         setSalesLength(data.length);
@@ -75,7 +68,7 @@ const AdminHome = () => {
     };
 
     fetchProducts();
-  }, [adminId]);
+  }, [userId]);
 
   return (
     <div className="home-admin">
@@ -84,77 +77,58 @@ const AdminHome = () => {
         <div>
           <ul>
             <li>
-              <Link to="/soldOrder">
-                Total sales<p>{salesLength}</p>
+              <Link to="/purchases">
+                Total purchases<p>{salesLength}</p>
               </Link>
             </li>
             <li>
-              <Link to="/adminOrders">
-                Total Orders<p>{ordersLength}</p>
+              <Link to="/orders">
+                Pending Orders<p>{ordersLength}</p>
               </Link>
             </li>
             <li>
-              <Link to="/adminProducts">
-                Inventory<p>{inventoryProducts}</p>
+              <Link to="/inventory">
+                Total Inventory<p>{inventoryProducts}</p>
               </Link>
             </li>
           </ul>
         </div>
       </div>
       <div className="admin-section">
-        <h3>What would you like to do today?</h3>
+        <h3>What makes us special</h3>
         <div className="admin-section-in">
           <ul className="admin-add">
             <li>
-              <Link to="/addProduct">
-                <FaCartPlus />
-                Add
-                <span>New Product</span>
-              </Link>
+              <p>
+                <IoMdSpeedometer />
+                <span>Fast Delivery</span>
+              </p>
             </li>
             <li>
-              <Link to="/addActivity">
-                <RxActivityLog /> Add
-                <span>New Activity</span>
-              </Link>
+              <p>
+                <IoMdSpeedometer />
+                <span>Reliable</span>
+              </p>
+            </li>
+            <li>
+              <p>
+                <IoMdSpeedometer />
+                <span>Order Status</span>
+              </p>
+            </li>
+            <li>
+              <p>
+                <IoMdSpeedometer />
+                <span>Chat with sellers</span>
+              </p>
             </li>
           </ul>
           <div className="admin-view">
             <h4>Explore your activities</h4>
             <ul>
               <li>
-                <Link to="/adminProducts">
-                  View your Products
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/adminActivities">
-                  View your Activities
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/adminOrders">
-                  View New Orders
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/soldOrder">
-                  View Sold
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
                 <Link to="/calendar">
-                  View Product Calender
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/purchases">
-                  Purchases
+                  Product Availability Calendar
                   <BsArrowRight />
                 </Link>
               </li>
@@ -166,4 +140,4 @@ const AdminHome = () => {
   );
 };
 
-export default AdminHome;
+export default UserHome;
