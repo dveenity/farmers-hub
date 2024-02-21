@@ -14,7 +14,6 @@ const cloud_name = process.env.cloudinaryName;
 const api_key = process.env.cloudinaryApiKey;
 const api_secret = process.env.cloudinaryApiSecret;
 
-console.log(cloud_name);
 cloudinary.config({
   cloud_name,
   api_key,
