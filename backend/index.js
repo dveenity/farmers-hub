@@ -9,10 +9,13 @@ const fs = require("fs");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 
+const cloud_name = process.env.cloudinaryName;
+const api_key = process.env.cloudinaryApiKey;
+const api_secret = process.env.cloudinaryApiSecret;
 cloudinary.config({
-  cloud_name: "dz062nei1",
-  api_key: "666677851628915",
-  api_secret: "5O5DLft-9cEUoj6tEF0pFbEuswg",
+  cloud_name,
+  api_key,
+  api_secret,
 });
 
 require("dotenv").config();
