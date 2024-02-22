@@ -1,76 +1,80 @@
-import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { IoMdSpeedometer } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
+import axios from "axios";
+import { useQuery } from "react-query";
+import FetchLoader from "../../../Custom/FetchLoader";
+
+const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const UserHome = () => {
-  const [salesLength, setSalesLength] = useState();
-  const [inventoryProducts, setInventoryProducts] = useState();
-  const [ordersLength, setOrdersLength] = useState();
   const [userId, setUserId] = useState(null);
 
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    isError: productsError,
+  } = useQuery("products", async () => {
+    try {
+      const response = await axios.post(`${serVer}/productsFetch`);
+      return response.data;
+    } catch (error) {
+      throw new Error("Error fetching products");
+    }
+  });
+
+  const {
+    data: ordersData,
+    isLoading: ordersLoading,
+    isError: ordersError,
+  } = useQuery("orders", async () => {
+    const token = localStorage.getItem("farm-users");
+    const response = await axios.get(`${serVer}/ordersUser/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  });
+
+  const {
+    data: salesData,
+    isLoading: salesLoading,
+    isError: salesError,
+  } = useQuery("sales", async () => {
+    const token = localStorage.getItem("farm-users");
+    const response = await axios.get(`${serVer}/purchased/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  });
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const url = `${serVer}/productsFetch`;
-        const url2 = `${serVer}/home`;
-        const url3 = `${serVer}/ordersUser/${userId}`;
-        const url4 = `${serVer}/purchased/${userId}`;
-
-        // Retrieve the token from local storage
-        const token = localStorage.getItem("farm-users");
-
-        // Fetch products from the server
-        const response = await axios.post(url, null, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // Set the fetched products into the state
-        const allProducts = response.data;
-
-        // Retrieve the logged-in user's username
-        const responseId = await axios.get(url2, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const loggedInUser = responseId.data;
-        setUserId(loggedInUser.username);
-
-        setInventoryProducts(allProducts.length);
-
-        // Fetch orders from the server
-        const responseOrder = await axios.get(url3, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const allOrders = responseOrder.data;
-        setOrdersLength(allOrders.length);
-
-        // fetch sold length from delivered schema
-        const responseSold = await axios.get(url4, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { data } = responseSold;
-        setSalesLength(data.length);
-      } catch (error) {
-        console.log("Error fetching products:", error);
-      }
+    const fetchUser = async () => {
+      const token = localStorage.getItem("farm-users");
+      const url = `${serVer}/home`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const loggedInUser = response.data;
+      setUserId(loggedInUser.username);
     };
 
-    fetchProducts();
-  }, [userId]);
+    fetchUser();
+  }, []);
+
+  if (productsLoading || ordersLoading || salesLoading) return <FetchLoader />;
+  if (productsError || ordersError || salesError)
+    return <div>Error fetching data</div>;
+
+  const inventoryProducts = productsData ? productsData.length : 0;
+  const ordersLength = ordersData ? ordersData.length : 0;
+  const salesLength = salesData ? salesData.length : 0;
 
   return (
     <div className="home-admin">

@@ -1,54 +1,47 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
+import { useQuery } from "react-query";
 import Clock from "../../Custom/Clock";
 import AdminHome from "./Admin/AdminHome";
 import Navigation from "../../Custom/Navigation";
+import FetchLoader from "../../Custom/FetchLoader";
 import UserHome from "./User/UserHome";
 
+const serVer = `https://farmers-hub-backend.vercel.app`;
+
+const fetchUserRole = async () => {
+  const token = localStorage.getItem("farm-users");
+
+  const response = await fetch(`${serVer}/home`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+};
+
 const Home = () => {
-  // State to store the user's role
-  const [role, setRole] = useState("");
-  const [username, setUsername] = useState("");
+  const { data, isLoading, isError } = useQuery("userRole", fetchUserRole);
 
-  useEffect(() => {
-    const url = `${serVer}/home`;
+  if (isLoading) return <FetchLoader />;
+  if (isError) return <div>Error fetching user</div>;
 
-    // Retrieve the token from local storage
-    const token = localStorage.getItem("farm-users");
-
-    // Fetch the user's role from the server
-    const fetchUserRole = async () => {
-      try {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { data } = response;
-        setRole(data.role);
-        setUsername(data.name.split(" ")[0]);
-      } catch (error) {
-        console.error("Error fetching user", error);
-        setRole(error.data.role);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
+  const { role, name } = data;
 
   return (
     <div className="home">
-      <div className="home-greet">
-        <Clock />
-        <h2>Hi, {username}</h2>
-        <h3>Agro Farmer&apos;s Hub</h3>
+      <h1>Agro Farmer&apos;s Hub</h1>
+      <div>
+        <div className="home-greet">
+          <Clock />
+          <h2>Hi, {name.split(" ")[1]}</h2>
+        </div>
+        {role === "user" && <UserHome />}
+        {role === "admin" && <AdminHome />}
       </div>
-      {role === "user" && <UserHome />}
-      {/* Content for Admin/Farmers users */}
-      {role === "admin" && <AdminHome />}
       <Navigation />
     </div>
   );

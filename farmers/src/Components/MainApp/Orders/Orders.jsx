@@ -1,109 +1,102 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
+import { useQuery, useMutation } from "react-query";
 import Navigation from "../../Custom/Navigation";
+import FetchLoader from "../../Custom/FetchLoader";
 import { FcIdea } from "react-icons/fc";
 import { TbCurrencyNaira } from "react-icons/tb";
+import LoadingSpin from "../../Custom/LoadingSpin";
+
+const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [userId, setUserId] = useState(null);
   const [modal, setModal] = useState(false);
   const [orderIdToDelete, setOrderIdToDelete] = useState(null);
+  const [cancelButton, setCancelButton] = useState("Yes");
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const token = localStorage.getItem("farm-users");
-        const response = await axios.get(`${serVer}/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const token = localStorage.getItem("farm-users");
 
-        const { username } = response.data;
-        setUserId(username);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  // Fetch user data
+  const fetchUser = async () => {
+    const url = `${serVer}/home`;
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
 
-    fetchUserData();
-  }, []);
-
-  //fetch orders
-  const fetchOrders = useCallback(async () => {
+  // Fetch orders
+  const fetchOrders = async (name) => {
     try {
-      if (!userId) return;
-
-      const url = `${serVer}/ordersUser/${userId}`;
-
-      const response = await axios.get(url);
-      const { data } = response;
-
-      const ordersOut = data.map((order, index) => (
-        <li key={index}>
-          <div>
-            <img src={order.image} />
-            <h4>{order.productName}</h4>
-            <h4>
-              <TbCurrencyNaira />
-              {order.price}
-            </h4>
-          </div>
-          <div>
-            <strong>
-              status: <span>{order.status}</span>
-            </strong>
-            <button onClick={() => toggleModal(order)}>Cancel Order</button>
-          </div>
-        </li>
-      ));
-
-      if (data.length === 0) {
-        setOrders(<div>No orders yet, place an order and view it here</div>);
-      } else {
-        setOrders(ordersOut);
-      }
+      const url = `${serVer}/ordersUser/${name}`;
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
     } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchOrders();
-  }, [fetchOrders]); // Add 'result' to the dependency array
-
-  const handleCancelOrder = async () => {
-    try {
-      const url = `${serVer}/order/${orderIdToDelete}`;
-      const response = await axios.delete(url);
-
-      if (response.status === 200) {
-        //refresh page
-        await fetchOrders();
-
-        //close Modal
-        closeModal();
-      } else {
-        console.error("Error deleting product:", response.data);
-      }
-    } catch (error) {
-      console.error("Error deleting product:", error);
+      throw new Error("Error fetching orders");
     }
   };
 
-  // open Modal
+  const {
+    data: userData,
+    isLoading: isUserLoading,
+    isError: isUserError,
+  } = useQuery("user", fetchUser);
+  const {
+    data: ordersData,
+    isLoading: isOrdersLoading,
+    isError: isOrdersError,
+    refetch: refetchOrders,
+  } = useQuery("orders", () => fetchOrders(userData?.name), {
+    enabled: !!userData?.name,
+  });
+
+  const deleteOrderMutation = useMutation(
+    (orderId) => {
+      const url = `${serVer}/order/${orderId}`;
+      return axios.delete(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    },
+    {
+      onSuccess: () => {
+        refetchOrders();
+        closeModal();
+      },
+    }
+  );
+
   const toggleModal = (order) => {
     setModal((prevView) => !prevView);
-    setOrderIdToDelete(order._id);
+    setOrderIdToDelete(order);
   };
 
-  //close modal
   const closeModal = () => {
     setModal(false);
   };
+
+  const handleCancelOrder = async () => {
+    try {
+      setCancelButton(<LoadingSpin />);
+      await deleteOrderMutation.mutateAsync(orderIdToDelete);
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    } finally {
+      setCancelButton("Yes");
+    }
+  };
+
+  if (isUserLoading || isOrdersLoading) return <FetchLoader />;
+  if (isUserError || isOrdersError) return <div>Error fetching data</div>;
+
+  const orders = ordersData || [];
 
   return (
     <div className="orders">
@@ -117,7 +110,32 @@ const Orders = () => {
       <div className="orders-sect">
         <h1>My Orders</h1>
         <div>
-          <ul>{orders}</ul>
+          {orders.length === 0 ? (
+            <p>No orders yet?... Place an order and manage it here</p>
+          ) : (
+            <ul>
+              {orders.map((order) => (
+                <li key={order._id}>
+                  <div>
+                    <img src={order.image} alt={order.productName} />
+                    <h4>{order.productName}</h4>
+                    <h4>
+                      <TbCurrencyNaira />
+                      {order.price}
+                    </h4>
+                  </div>
+                  <div>
+                    <strong>
+                      status: <span>{order.status}</span>
+                    </strong>
+                    <button onClick={() => toggleModal(order._id)}>
+                      Cancel Order
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
       {modal && (
@@ -126,7 +144,7 @@ const Orders = () => {
             <div className="orders-modal">
               <h4>Are you sure?</h4>
               <div>
-                <button onClick={handleCancelOrder}>Yes</button>
+                <button onClick={handleCancelOrder}>{cancelButton}</button>
                 <button onClick={closeModal}>No</button>
               </div>
             </div>

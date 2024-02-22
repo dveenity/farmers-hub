@@ -6,9 +6,9 @@ import GoBack from "../../../Custom/GoBack";
 import { IoIosSend } from "react-icons/io";
 import io from "socket.io-client";
 
-const socket = io(`${serVer}`);
-
 const Chat = () => {
+  const socket = io(`${serVer}`);
+
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef(null);
@@ -42,6 +42,14 @@ const Chat = () => {
   }, []);
 
   useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to socket.io server");
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from socket.io server");
+    });
+
     // Fetch previous messages when component mounts
     socket.emit("previousMessages"); // Emit event to request previous messages from the server
 

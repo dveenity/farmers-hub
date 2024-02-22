@@ -13,24 +13,25 @@ const Clock = () => {
     if (min < 60 && hour < 12) {
       setClock(
         <span>
-          Good Morning <IoPartlySunnySharp />
+          Good Morning{" "}
+          <IoPartlySunnySharp style={{ color: "rgb(80, 80, 255)" }} />
         </span>
       );
     } else if (min < 60 && hour < 16) {
       setClock(
         <span>
-          Good Day <IoSunny />
+          Good Day <IoSunny style={{ color: "yellow" }} />
         </span>
       );
     } else if (min < 60 && hour < 24) {
       setClock(
         <span>
-          Good Evening <BsFillMoonStarsFill />
+          Good Evening <BsFillMoonStarsFill style={{ color: "black" }} />
         </span>
       );
     }
   }, []);
-  return <h1 className="clock">{clock}</h1>;
+  return <h2 className="clock">{clock}</h2>;
 };
 
 export default Clock;

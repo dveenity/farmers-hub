@@ -25,8 +25,8 @@ const AdminOrders = () => {
           },
         });
 
-        const { username } = response.data;
-        setAdminId(username);
+        const { name } = response.data;
+        setAdminId(name);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -73,6 +73,10 @@ const AdminOrders = () => {
 
         setResult("Order moved to Sold");
 
+        setTimeout(() => {
+          setResult("");
+        }, 2000);
+
         await fetchOrdersNotifications();
 
         setSelectedOrder(null);
@@ -87,6 +91,8 @@ const AdminOrders = () => {
       }
     } catch (error) {
       console.error("Error updating order status:", error);
+    } finally {
+      setStatus("Update Status");
     }
   };
 
@@ -134,7 +140,7 @@ const AdminOrders = () => {
                 </ul>
                 <div>
                   <strong>Address</strong>
-                  <ul>
+                  <ul className="adminOrders-address">
                     <li>{selectedOrder.userDeliveryDetails.street}</li>
                     <li>{selectedOrder.userDeliveryDetails.state}</li>
                     <li>{selectedOrder.userDeliveryDetails.country}</li>

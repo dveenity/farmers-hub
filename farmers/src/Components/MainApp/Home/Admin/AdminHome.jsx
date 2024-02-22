@@ -1,80 +1,68 @@
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
-import { FaCartPlus } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaCartPlus, FaChartLine, FaStore } from "react-icons/fa";
 import { RxActivityLog } from "react-icons/rx";
 import { BsArrowRight } from "react-icons/bs";
+import { HiInboxArrowDown } from "react-icons/hi2";
+import { useQuery } from "react-query";
+import FetchLoader from "../../../Custom/FetchLoader";
+
+const serVer = `https://farmers-hub-backend.vercel.app`;
+
+const fetchAdminData = async (token, adminId) => {
+  const urls = [
+    `${serVer}/productsFetch`,
+    `${serVer}/home`,
+    `${serVer}/orders/${adminId}`,
+    `${serVer}/delivered/${adminId}`,
+  ];
+
+  const [productsResponse, loggedInUserResponse, ordersResponse, soldResponse] =
+    await Promise.all(
+      urls.map((url) =>
+        url.includes("productsFetch")
+          ? axios.post(url)
+          : axios.get(url, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+      )
+    );
+
+  const products = productsResponse.data;
+  const loggedInUser = loggedInUserResponse.data;
+  const orders = ordersResponse.data;
+  const sold = soldResponse.data;
+
+  const filteredProducts = products.filter(
+    (product) => product.name === loggedInUser.name
+  );
+
+  return {
+    filteredProducts: filteredProducts.length,
+    ordersLength: orders.length,
+    salesLength: sold.length,
+    adminId: loggedInUser.name,
+  };
+};
 
 const AdminHome = () => {
-  const [salesLength, setSalesLength] = useState();
-  const [inventoryProducts, setInventoryProducts] = useState();
-  const [ordersLength, setOrdersLength] = useState();
-  const [adminId, setAdminId] = useState(null);
+  const { data, isLoading, isError } = useQuery("adminData", async () => {
+    const token = localStorage.getItem("farm-users");
+    const response = await axios.get(`${serVer}/home`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const loggedInUser = response.data;
+    return fetchAdminData(token, loggedInUser.name);
+  });
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const url = `${serVer}/productsFetch`;
-        const url2 = `${serVer}/home`;
-        const url3 = `${serVer}/orders/${adminId}`;
+  if (isLoading) return <FetchLoader />;
+  if (isError) return <div>Error fetching data</div>;
 
-        // Retrieve the token from local storage
-        const token = localStorage.getItem("farm-users");
-
-        // Fetch products from the server
-        const response = await axios.post(url, null, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        // Set the fetched products into the state
-        const allProducts = response.data;
-
-        // Retrieve the logged-in user's username
-        const responseId = await axios.get(url2, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const loggedInUser = responseId.data;
-        setAdminId(loggedInUser.username);
-
-        //Filter products based on the username
-        const filteredProducts = allProducts.filter(
-          (product) => product.username === adminId
-        );
-        setInventoryProducts(filteredProducts.length);
-
-        // Fetch orders from the server
-        const responseOrder = await axios.get(url3, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const allOrders = responseOrder.data;
-        setOrdersLength(allOrders.length);
-
-        // fetch sold length from delivered schema
-        const responseSold = await axios.get(`${serVer}/delivered/${adminId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { data } = responseSold;
-        setSalesLength(data.length);
-      } catch (error) {
-        console.log("Error fetching products:", error);
-      }
-    };
-
-    fetchProducts();
-  }, [adminId]);
+  const { filteredProducts, ordersLength, salesLength } = data;
 
   return (
     <div className="home-admin">
@@ -84,17 +72,29 @@ const AdminHome = () => {
           <ul>
             <li>
               <Link to="/soldOrder">
-                Total Sales<p>{salesLength}</p>
+                <div>
+                  <strong>Total Sales</strong>
+                  <FaChartLine className="dash-icons" />
+                </div>
+                <p>{salesLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/adminOrders">
-                New Orders<p>{ordersLength}</p>
+                <div>
+                  <strong>New Orders</strong>
+                  <HiInboxArrowDown className="dash-icons" />
+                </div>
+                <p>{ordersLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/adminProducts">
-                Inventory<p>{inventoryProducts}</p>
+                <div>
+                  <strong>Inventory</strong>
+                  <FaStore className="dash-icons" />
+                </div>
+                <p>{filteredProducts}</p>
               </Link>
             </li>
           </ul>
@@ -147,7 +147,7 @@ const AdminHome = () => {
               </li>
               <li>
                 <Link to="/calendar">
-                  View Product Calender
+                  View Product Calendar
                   <BsArrowRight />
                 </Link>
               </li>

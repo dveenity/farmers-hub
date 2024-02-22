@@ -9,16 +9,16 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  cors({
-    origin: [
-      "https://agro-farmers-hub.vercel.app",
-      "https://farmers-hub-backend.vercel.app",
-    ],
-    methods: ["POST", "GET"],
-    credentials: true,
-  })
-);
+app.use(cors());
+// app.use(cors({
+//   origin: [
+//     "https://agro-farmers-hub.vercel.app",
+//     "https://farmers-hub-backend.vercel.app",
+//     "http://localhost:5173",
+//   ],
+//   methods: ["POST", "GET"],
+//   credentials: true,
+// }));
 
 //images store path
 const fs = require("fs");
@@ -67,11 +67,15 @@ const server = http.createServer(app); // Create HTTP server
 const io = socketIo(server, {
   cors: {
     origin: [
+      `http://localhost:5173`,
+      "http://localhost",
       "https://agro-farmers-hub.vercel.app",
       "https://farmers-hub-backend.vercel.app",
     ],
-    methods: ["GET", "POST"],
-    credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    "Access-Control-Allow-Origin": "http://localhost:5173",
+    allowedHeaders: ["my-custom-header"],
+    // credentials: true,
   },
 });
 
@@ -161,7 +165,6 @@ app.use("/home", requireAuth);
 app.use("/update-profile", requireAuth);
 app.use("/addProduct", requireAuth);
 app.use("/addActivity", requireAuth);
-app.use("/productsFetch", requireAuth);
 app.use("/activitiesFetch", requireAuth);
 
 // Server route for the home page
@@ -197,7 +200,7 @@ app.get("/allUsers", async (req, res) => {
   }
 });
 
-// Server route tp update user profile and add address
+// Server route to update user profile and add address
 app.put("/update-profile", async (req, res) => {
   try {
     const userId = req.userId;
@@ -261,7 +264,7 @@ app.post("/addProduct", upload.single("image"), async (req, res) => {
 
     // Create a new Product document
     const newProduct = new Products({
-      username: user.username,
+      username: user.name,
       name: productName,
       description: productDescription,
       price: productPrice,
@@ -300,7 +303,7 @@ app.post("/addActivity", upload.single("image"), async (req, res) => {
 
     // Create a new activity document
     const newProduct = new Activity({
-      username: user.username,
+      username: user.name,
       name: activityName,
       description: activityDescription,
       image: result.secure_url, // Use the URL provided by Cloudinary

@@ -18,11 +18,7 @@ const AdminProducts = () => {
         const token = localStorage.getItem("farm-users");
 
         // Fetch products from the server
-        const response = await axios.post(url, null, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.post(url);
 
         // Set the fetched products into the state
         const allProducts = response.data;

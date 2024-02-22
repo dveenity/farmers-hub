@@ -1,30 +1,24 @@
 import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
-import Navigation from "../../Custom/Navigation";
-import Logout from "../../Custom/Logout";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { IoIosChatbubbles } from "react-icons/io";
 import { TbBuildingEstate } from "react-icons/tb";
 import { SiUnitednations } from "react-icons/si";
-
-//import react hook form for handling the form
-import { useForm } from "react-hook-form";
 import { FaHome, FaPhone, FaUser } from "react-icons/fa";
+import { useForm } from "react-hook-form";
+import Navigation from "../../Custom/Navigation";
+import Logout from "../../Custom/Logout";
+import LoadingSpin from "../../Custom/LoadingSpin";
+import FetchLoader from "../../Custom/FetchLoader";
+
+// caching with react query
+import { useQuery } from "react-query";
+
+const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const Profile = () => {
-  const [userName, setUserName] = useState("");
-  const [name, setName] = useState("");
-  const [userRole, setUserRole] = useState("");
-  const [userMail, setUserMail] = useState("");
-  const [userImage, setUserImage] = useState("");
+  const [button, setButton] = useState("Save");
 
-  //user address outPut
-  const [userStreet, setUserStreet] = useState("");
-  const [userState, setUserState] = useState("");
-  const [userCountry, setUserCountry] = useState("");
-  const [userContact, setUserContact] = useState("");
   const [addressNull, setAddressNull] = useState("");
 
   const [editMode, setEditMode] = useState(false);
@@ -32,50 +26,36 @@ const Profile = () => {
 
   // react form
   const form = useForm();
-  const { register, handleSubmit, formState } = form;
+  const { register, handleSubmit, formState, reset } = form;
   const { errors, isSubmitting } = formState;
 
-  // Retrieve the token from local storage
   const token = localStorage.getItem("farm-users");
 
-  // Fetch the user's details from the server
-  const fetchUser = useCallback(async () => {
+  // fetch user data
+  const fetchUser = async () => {
     const url = `${serVer}/home`;
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  };
+  // cache fetched data with react query
+  const { data, isLoading, isError, refetch } = useQuery("user", fetchUser);
 
-      const { data } = response;
-      // set data properties into state
-      setName(data.name);
-      setUserName(data.username);
-      setUserRole(data.role);
-      setUserMail(data.email);
-      setUserImage(data.image);
+  // loading screen while fetching
+  if (isLoading) return <FetchLoader />;
+  if (isError) return <div>Error fetching user</div>;
 
-      //user address
-      const { address } = data;
+  // destructing data from fetch
+  const { name, role, email, image, address } = data;
 
-      //if address not present yet, display this
-      if (!address) {
-        setAddressNull("No address info yet, edit profile and add address");
-      } else {
-        setUserStreet(address.street + ",");
-        setUserState(address.state + ",");
-        setUserCountry(address.country);
-        setUserContact("contact: " + address.phone);
-      }
-    } catch (error) {
-      console.error("Error fetching user", error);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+  // address
+  const userStreet = address ? address.street + "," : "";
+  const userState = address ? address.state + "," : "";
+  const userCountry = address ? address.country : "";
+  const userContact = address ? `contact: ${address.phone}` : "";
 
   // open Model to edit profile
   const handleEdit = () => {
@@ -88,6 +68,8 @@ const Profile = () => {
     const { name, street, state, country, phone } = data;
 
     try {
+      setButton(<LoadingSpin />);
+
       await axios.put(
         url,
         {
@@ -105,14 +87,24 @@ const Profile = () => {
       );
 
       setResultMessage("profileUpdated");
+
+      setTimeout(() => {
+        setResultMessage;
+      }, 3000);
+
       setAddressNull(null);
 
-      //refresh profile to update
-      await fetchUser();
+      // Refresh user data to update
+      await refetch();
+
+      // clear form
+      reset();
 
       handleEdit();
     } catch (error) {
       console.error("Error updating profile", error);
+    } finally {
+      setButton("Save");
     }
   };
 
@@ -132,7 +124,7 @@ const Profile = () => {
       </div>
       <div className="profile-details">
         <div className="profile-pic-sect">
-          <img src={userImage} alt="profile-pic" />
+          <img src={image} alt="profile-pic" />
           <label>
             Update profile image
             <input type="file" accept="image/png, image/jpg,image/jpeg" />
@@ -234,7 +226,7 @@ const Profile = () => {
                   </div>
                   <div className="profile-buttons">
                     <button type="submit" disabled={isSubmitting}>
-                      Save
+                      {button}
                     </button>
                     <button onClick={handleEdit}>close</button>
                   </div>
@@ -247,8 +239,8 @@ const Profile = () => {
             <div className="profile-details-in">
               <ul>
                 <li>Name: {name}</li>
-                <li>Account Type: {userRole}</li>
-                <li>Email: {userMail}</li>
+                <li>Account Type: {role}</li>
+                <li>Email: {email}</li>
               </ul>
               <div>
                 <h3>Delivery Address</h3>
