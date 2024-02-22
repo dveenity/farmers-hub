@@ -9,16 +9,18 @@ require("dotenv").config();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-// app.use(cors({
-//   origin: [
-//     "https://agro-farmers-hub.vercel.app",
-//     "https://farmers-hub-backend.vercel.app",
-//     "http://localhost:5173",
-//   ],
-//   methods: ["POST", "GET"],
-//   credentials: true,
-// }));
+// app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://agro-farmers-hub.vercel.app",
+      "https://farmers-hub-backend.vercel.app",
+      "http://localhost:5173",
+    ],
+    methods: ["POST", "GET"],
+    credentials: true,
+  })
+);
 
 //images store path
 const fs = require("fs");
