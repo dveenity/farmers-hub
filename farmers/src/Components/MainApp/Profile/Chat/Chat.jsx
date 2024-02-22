@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import GoBack from "../../../Custom/GoBack";
 import { IoIosSend } from "react-icons/io";
 import io from "socket.io-client";
-const chatServer = `http://localhost:8800`;
+const chatServer = `https://farmers-hub-chat-backend.vercel.app/`;
 const Chat = () => {
   const socket = io(chatServer);
 
