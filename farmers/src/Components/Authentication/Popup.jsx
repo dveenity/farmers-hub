@@ -93,15 +93,15 @@ const Popup = ({ onClose }) => {
               It is essential to familiarize yourself with our Terms of Use,
               which govern your interactions with Agro Farmers Hub. These terms
               detail the rules and guidelines for using our application. By
-              clicking <span>Agree</span> you acknowledge that you have read,
-              understood, and agree to abide by our Terms of Use.
+              clicking Agree you acknowledge that you have read, understood, and
+              agree to abide by our Terms of Use.
             </p>
           </div>
           <div>
             <h2>How to Proceed</h2>
             <p>
-              To start your journey with Agro Farmers Hub, please click the
-              <span>Agree</span> button below.
+              To start your journey with Agro Farmers Hub, please click on the
+              Agree button below.
             </p>
           </div>
           <button onClick={handleAgree}>{isAnimating}</button>
