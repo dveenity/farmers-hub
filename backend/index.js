@@ -1,27 +1,12 @@
 const express = require("express");
-const http = require("http");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-const socketIo = require("socket.io");
 require("dotenv").config();
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cors());
-
-// app.use(
-//   cors({
-//     origin: [
-//       "https://agro-farmers-hub.vercel.app",
-//       "https://farmers-hub-backend.vercel.app",
-//       "http://localhost:5173",
-//     ],
-//     methods: ["POST", "GET"],
-//     credentials: true,
-//   })
-// );
 app.use(
   cors({
     origin: "*",
@@ -55,7 +40,6 @@ const Activity = require("./Models/Activity");
 const Calendar = require("./Models/Calendar");
 const requireAuth = require("./Models/requireAuth");
 const Delivered = require("./Models/Delivered");
-const MessageModel = require("./Models/MessageModel");
 
 const secretKey = process.env.SECRET;
 const port = process.env.port;
@@ -67,60 +51,6 @@ const createToken = (_id) => {
 // Define a default route handler for the root URL ("/")
 app.get("/", (req, res) => {
   res.send("Hello, World! This is the root route.");
-});
-
-// Chat Server
-const chatPort = process.env.chatPort;
-const server = http.createServer(app); // Create HTTP server
-const io = socketIo(server, {
-  cors: {
-    origin: "*",
-  },
-});
-
-// Socket.IO logic goes here
-io.on("connection", async (socket) => {
-  console.log("A user connected");
-
-  try {
-    // Retrieve previous messages from the database
-    const messages = await MessageModel.find()
-      .sort("-timestamp")
-      .limit(10)
-      .exec();
-
-    // Send previous messages to the connected client
-    socket.emit("previousMessages", messages.reverse());
-  } catch (err) {
-    console.error("Error retrieving messages:", err);
-  }
-
-  // Handle incoming messages
-  socket.on("sendMessage", async (data) => {
-    // Create a new message object
-    const newMessage = new MessageModel({
-      content: data.content,
-      sender: data.user,
-    });
-
-    try {
-      // Save the message to the database
-      await newMessage.save();
-      // Broadcast the message to all connected clients
-      io.emit("receiveMessage", newMessage);
-    } catch (err) {
-      console.error("Error saving message:", err);
-    }
-  });
-
-  // Handle disconnect event
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
-
-server.listen(chatPort, () => {
-  console.log(`Chat is running on port ${chatPort}`);
 });
 
 // server sign up handle signUp

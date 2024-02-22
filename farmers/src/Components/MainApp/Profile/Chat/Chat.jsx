@@ -5,71 +5,60 @@ import { useState, useEffect, useRef } from "react";
 import GoBack from "../../../Custom/GoBack";
 import { IoIosSend } from "react-icons/io";
 import io from "socket.io-client";
-
+const chatServer = `http://localhost:8800`;
 const Chat = () => {
-  const socket = io(`${serVer}`);
+  const socket = io(chatServer);
 
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef(null);
-
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    const url = `${serVer}/home`;
-
-    // Retrieve the token from local storage
-    const token = localStorage.getItem("farm-users");
-
-    // Fetch the user's role from the server
-    const fetchUserRole = async () => {
+    // Fetch user data and set username
+    const fetchUserData = async () => {
       try {
-        const response = await axios.get(url, {
+        const token = localStorage.getItem("farm-users");
+        const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        const { data } = response;
-
-        setUsername(data.username);
+        setUsername(response.data.username);
       } catch (error) {
-        console.error("Error fetching user", error);
+        console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserRole();
-  }, []);
+    fetchUserData();
 
-  useEffect(() => {
-    socket.on("connect", () => {
-      console.log("Connected to socket.io server");
-    });
+    // Subscribe to Socket.IO events
+    socket.on("connect", () => console.log("Connected to socket.io server"));
+    socket.on("disconnect", () =>
+      console.log("Disconnected from socket.io server")
+    );
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected from socket.io server");
-    });
+    socket.on("previousMessages", (previousMessages) =>
+      setMessages(previousMessages)
+    );
 
-    // Fetch previous messages when component mounts
-    socket.emit("previousMessages"); // Emit event to request previous messages from the server
-
-    // Fetch previous messages when component mounts
-    socket.on("previousMessages", (previousMessages) => {
-      setMessages(previousMessages);
-    });
-
-    // Listen for new messages
     socket.on("receiveMessage", (newMessage) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
+
+    // Cleanup function: unsubscribe from Socket.IO events
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("previousMessages");
+      socket.off("receiveMessage");
+    };
   }, []);
 
   const sendMessage = () => {
-    // Emit the "sendMessage" event to the server with the message data
+    if (!inputValue.trim()) return; // Don't send empty messages
     socket.emit("sendMessage", { content: inputValue, user: username });
-
-    // Clear the input field after sending the message
-    setInputValue("");
+    setInputValue(""); // Clear input field after sending message
   };
 
   const scrollToBottom = () => {
@@ -77,7 +66,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    scrollToBottom(); // Scroll to bottom when new messages arrive
   }, [messages]);
 
   return (
@@ -85,7 +74,6 @@ const Chat = () => {
       <div>
         <GoBack />
         <div className="messageBox" style={{ position: "relative" }}>
-          {/* Display previous messages */}
           {messages.map((message) => (
             <div
               className="messageBox-in"
@@ -94,25 +82,19 @@ const Chat = () => {
                 position: "relative",
                 backgroundColor:
                   message.sender === username ? "#00250e" : "green",
-                marginLeft: message.sender === username ? "auto" : "0", // Stick to right if user is the sender
-                marginRight: message.sender !== username ? "auto" : "0", // Stick to left if user is not the sender
+                marginLeft: message.sender === username ? "auto" : "0",
+                marginRight: message.sender !== username ? "auto" : "0",
               }}>
-              {/* Display username only for other users' messages */}
               <div className="messageUser">
                 {message.sender !== username && <div>{message.sender}:</div>}
-                {/* Display message content */}
                 <span>{message.content}</span>
               </div>
-              {/* Display timestamp */}
               <p>{new Date(message.timestamp).toLocaleString()}</p>
-
-              {/* Ref for scrolling to bottom */}
               <div ref={messagesEndRef} />
             </div>
           ))}
         </div>
         <div className="sendBox">
-          {/* Input field for new message */}
           <input
             type="text"
             value={inputValue}

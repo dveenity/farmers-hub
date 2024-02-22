@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../Hooks/useAuthContext";
 import LoadingSpin from "../Custom/LoadingSpin";
+import Popup from "./Popup";
 
 //import react hook form for handling the form
 import { useForm } from "react-hook-form";
@@ -21,6 +22,19 @@ import { MdAttachEmail } from "react-icons/md";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 const Signup = () => {
+  const [showUserAgreement, setShowUserAgreement] = useState(false);
+
+  // display agreement note after 5 seconds
+  useEffect(() => {
+    // Show the popup after 5 seconds
+    const timer = setTimeout(() => {
+      setShowUserAgreement(true);
+    }, 5000);
+
+    // Clear the timer when the component unmounts to avoid memory leaks
+    return () => clearTimeout(timer);
+  }, []);
+
   // react form
   const form = useForm();
   const { register, handleSubmit, formState } = form;
@@ -108,109 +122,117 @@ const Signup = () => {
   };
 
   return (
-    <div className="authentication">
-      <div>
-        <h3>Sign Up</h3>
-        <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
-          <div className="inputBox">
-            <label htmlFor="name">
-              <FaUser />
-            </label>
-            <div className="inputBox-in">
-              <input
-                required
-                type="text"
-                id="name"
-                {...register("name", { required: "Full Name is required" })}
-              />
-              <span>Full Name</span>
-              <p>{errors.name?.message}</p>
-            </div>
-          </div>
-          <div className="inputBox">
-            <label htmlFor="username">
-              <FaUserCircle />
-            </label>
-            <div className="inputBox-in">
-              <input
-                required
-                type="text"
-                id="username"
-                {...register("username", { required: "Username is required" })}
-              />
-              <span>Username</span>
-              <p>{errors.username?.message}</p>
-            </div>
-          </div>
-          <div className="inputBox">
-            <label htmlFor="email">
-              <MdAttachEmail />
-            </label>
-            <div className="inputBox-in">
-              <input
-                required
-                type="email"
-                id="email"
-                {...register("email", { required: "Email is required" })}
-              />
-              <span>Email</span>
-              <p>{errors.email?.message}</p>
-            </div>
-          </div>
-          {/* Password input */}
-          <div className="inputBox">
-            <label htmlFor="password">
-              <FaLock />
-            </label>
-            <div className="inputBox-in">
-              <input
-                required
-                type={passwordVisible ? "text" : "password"}
-                id="password"
-                {...register("password", {
-                  required: "Password is required",
-                })}
-              />
-              <span>Password</span>
-              {/* Toggle password visibility button */}
-              <div
-                className="toggle"
-                type="button"
-                onClick={togglePasswordVisibility}>
-                {passwordVisible ? <FaRegEyeSlash /> : <FaEye />}
+    <div>
+      <div className="authentication">
+        <div>
+          <h3>Sign Up</h3>
+          <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
+            <div className="inputBox">
+              <label htmlFor="name">
+                <FaUser />
+              </label>
+              <div className="inputBox-in">
+                <input
+                  required
+                  type="text"
+                  id="name"
+                  {...register("name", { required: "Full Name is required" })}
+                />
+                <span>Full Name</span>
+                <p>{errors.name?.message}</p>
               </div>
-              <p>{errors.password?.message}</p>
             </div>
-          </div>
-          {/* Role selection */}
-          <div className="inputBox">
-            <label htmlFor="role">
-              <FaUserGear />
-            </label>
-            <div className="inputBox-in">
-              <select
-                {...register("role", {
-                  required: "role is required",
-                })}
-                id="role">
-                <option disabled selected></option>
-                <option value="admin">Farmer</option>
-                <option value="user">Stakeholder</option>
-                <option value="user">Partner</option>
-              </select>
-              <p>{errors.role?.message}</p>
+            <div className="inputBox">
+              <label htmlFor="username">
+                <FaUserCircle />
+              </label>
+              <div className="inputBox-in">
+                <input
+                  required
+                  type="text"
+                  id="username"
+                  {...register("username", {
+                    required: "Username is required",
+                  })}
+                />
+                <span>Username</span>
+                <p>{errors.username?.message}</p>
+              </div>
             </div>
+            <div className="inputBox">
+              <label htmlFor="email">
+                <MdAttachEmail />
+              </label>
+              <div className="inputBox-in">
+                <input
+                  required
+                  type="email"
+                  id="email"
+                  {...register("email", { required: "Email is required" })}
+                />
+                <span>Email</span>
+                <p>{errors.email?.message}</p>
+              </div>
+            </div>
+            {/* Password input */}
+            <div className="inputBox">
+              <label htmlFor="password">
+                <FaLock />
+              </label>
+              <div className="inputBox-in">
+                <input
+                  required
+                  type={passwordVisible ? "text" : "password"}
+                  id="password"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                />
+                <span>Password</span>
+                {/* Toggle password visibility button */}
+                <div
+                  className="toggle"
+                  type="button"
+                  onClick={togglePasswordVisibility}>
+                  {passwordVisible ? <FaRegEyeSlash /> : <FaEye />}
+                </div>
+                <p>{errors.password?.message}</p>
+              </div>
+            </div>
+            {/* Role selection */}
+            <div className="inputBox">
+              <label htmlFor="role">
+                <FaUserGear />
+              </label>
+              <div className="inputBox-in">
+                <select
+                  {...register("role", {
+                    required: "role is required",
+                  })}
+                  id="role">
+                  <option disabled selected></option>
+                  <option value="admin">Farmer</option>
+                  <option value="user">Stakeholder</option>
+                  <option value="user">Partner</option>
+                </select>
+                <p>{errors.role?.message}</p>
+              </div>
+            </div>
+            <button type="submit" disabled={isSubmitting || isLoading}>
+              {send}
+            </button>
+          </form>
+          <p className="result">{resultMessage}</p>
+          <div className="sign-log">
+            <p>Already have an account?</p>
+            <Link to="/login">Login</Link>
           </div>
-          <button type="submit" disabled={isSubmitting || isLoading}>
-            {send}
-          </button>
-        </form>
-        <p className="result">{resultMessage}</p>
-        <div className="sign-log">
-          <p>Already have an account?</p>
-          <Link to="/login">Login</Link>
         </div>
-      </div>
+      </div>{" "}
+      {/* Render the user agreement popup if showUserAgreement is true */}
+      {showUserAgreement && (
+        <Popup onClose={() => setShowUserAgreement(false)} />
+      )}
     </div>
   );
 };
