@@ -36,7 +36,7 @@ const fetchAdminData = async (token, adminId) => {
   const sold = soldResponse.data;
 
   const filteredProducts = products.filter(
-    (product) => product.name === loggedInUser.name
+    (product) => product.username === adminId
   );
 
   return {
@@ -67,7 +67,6 @@ const AdminHome = () => {
   return (
     <div className="home-admin">
       <div className="dashboard">
-        <h2>Dashboard</h2>
         <div>
           <ul>
             <li>
@@ -89,7 +88,7 @@ const AdminHome = () => {
               </Link>
             </li>
             <li>
-              <Link to="/adminProducts">
+              <Link to="/adminInventory">
                 <div>
                   <strong>Inventory</strong>
                   <FaStore className="dash-icons" />
@@ -122,13 +121,13 @@ const AdminHome = () => {
             <h4>Explore your activities</h4>
             <ul>
               <li>
-                <Link to="/adminProducts">
+                <Link to="/adminInventory">
                   View your Products
                   <BsArrowRight />
                 </Link>
               </li>
               <li>
-                <Link to="/adminActivities">
+                <Link to="/adminInventory">
                   View your Activities
                   <BsArrowRight />
                 </Link>

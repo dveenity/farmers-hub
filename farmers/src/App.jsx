@@ -9,13 +9,12 @@ import Orders from "./Components/MainApp/Orders/Orders";
 import Profile from "./Components/MainApp/Profile/Profile";
 import AddProduct from "./Components/MainApp/Home/Admin/AddProduct";
 import AddActivity from "./Components/MainApp/Home/Admin/AddActivity";
-import AdminProducts from "./Components/MainApp/Inventory/AdminProducts";
-import AdminActivities from "./Components/MainApp/Inventory/AdminActivities";
 import AdminOrders from "./Components/MainApp/Orders/AdminOrders";
 import ProductCalendar from "./Components/MainApp/Calender/Calendar";
 import AdminSold from "./Components/MainApp/Home/Admin/AdminSold";
 import Purchases from "./Components/MainApp/Home/Purchases";
 import Chat from "./Components/MainApp/Profile/Chat/Chat";
+import AdminInventory from "./Components/MainApp/Inventory/AdminInventory";
 
 function App() {
   const { user } = useAuthContext();
@@ -54,12 +53,8 @@ function App() {
             element={user ? <Inventory /> : <Navigate to="/Login" />}
           />
           <Route
-            path="/adminProducts"
-            element={user ? <AdminProducts /> : <Navigate to="/Login" />}
-          />
-          <Route
-            path="/adminActivities"
-            element={user ? <AdminActivities /> : <Navigate to="/Login" />}
+            path="/adminInventory"
+            element={user ? <AdminInventory /> : <Navigate to="/Login" />}
           />
           <Route path="/adminOrders" element={<AdminOrders />} />
           <Route path="/soldOrder" element={<AdminSold />} />

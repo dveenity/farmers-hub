@@ -25,7 +25,6 @@ const AddActivity = () => {
   const { errors, isSubmitting, isLoading } = formState;
 
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       setSend(LoadingSpin);
       // Retrieve the token from local storage

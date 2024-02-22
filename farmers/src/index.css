@@ -77,6 +77,12 @@ html {
   align-items: center;
   gap: 0.5rem;
   font-style: italic;
+  font-size: x-large;
+  background: linear-gradient(to right, var(--bg-color-grid), green);
+  width: fit-content;
+  padding: 0.3rem 0.5rem;
+  border-radius: 1.5rem;
+  color: white;
 }
 
 /* STYLING BACK BUTTON */
@@ -532,20 +538,19 @@ html {
 
   > div {
     padding: 0 0.5rem;
+    display: flex;
+    flex-flow: column;
+    gap: 0.5rem;
   }
 
   .home-greet {
     display: flex;
     flex-flow: column;
-    gap: 0.5rem;
-
-    > :nth-child(1) {
-      font-size: clamp(2rem, 8vw, 2.5rem);
-    }
+    gap: 1rem;
 
     h2 {
       text-align: start;
-      font-size: clamp(1.5rem, 6vw, 1.8rem);
+      font-size: clamp(1.2rem, 4vw, 1.8rem);
       font-weight: bold;
     }
   }
@@ -1588,6 +1593,8 @@ html {
   .adminOrders-address {
     display: flex;
     flex-flow: row wrap;
+    gap: 0.3rem;
+
     li {
       list-style-type: none;
     }
@@ -1596,6 +1603,28 @@ html {
   .results {
     text-align: center;
     color: red;
+  }
+}
+
+/* ADMIN SOLD ORDERS */
+.adminSold {
+  display: flex;
+  flex-flow: column;
+  gap: 0.5rem;
+
+  li {
+    background-color: var(--bg-color-grid);
+    color: white;
+    padding: 0.3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+
+    img {
+      height: 4rem;
+      width: 5rem;
+    }
   }
 }
 

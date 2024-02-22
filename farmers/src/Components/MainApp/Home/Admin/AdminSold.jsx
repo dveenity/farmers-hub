@@ -1,68 +1,85 @@
-import { useEffect, useState } from "react";
 import axios from "axios";
+import { useQuery } from "react-query";
+import GoBack from "../../../Custom/GoBack";
+import FetchLoader from "../../../Custom/FetchLoader";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const AdminSold = () => {
-  const [adminSoldProducts, setAdminSoldProducts] = useState([]);
-  const [adminId, setAdminId] = useState(null); // admin ID
   const token = localStorage.getItem("farm-users");
 
-  useEffect(() => {
-    // Fetch admin ID
-    const fetchAdminId = async () => {
-      try {
-        const response = await axios.get(`${serVer}/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const {
+    data: adminIdData,
+    isLoading: adminIdLoading,
+    error: adminIdError,
+  } = useQuery("adminId", fetchAdminId, {
+    enabled: !!token,
+  });
 
-        const { username } = response.data;
-        setAdminId(username);
-      } catch (error) {
-        console.error("Error fetching admin ID:", error);
-      }
-    };
+  const {
+    data: adminSoldProducts,
+    isLoading: soldProductsLoading,
+    error: soldProductsError,
+    refetch: refetchSoldProducts,
+  } = useQuery(["adminSoldProducts", adminIdData], fetchAdminSoldProducts, {
+    enabled: !!adminIdData,
+  });
 
-    fetchAdminId();
-  }, [token]);
+  async function fetchAdminId() {
+    try {
+      const response = await axios.get(`${serVer}/home`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-  useEffect(() => {
-    // Fetch sold products associated with the admin ID
-    const fetchAdminSoldProducts = async () => {
-      try {
-        const response = await axios.get(`${serVer}/delivered/${adminId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { data } = response;
-        setAdminSoldProducts(data);
-      } catch (error) {
-        console.error("Error fetching sold products:", error);
-      }
-    };
-
-    if (adminId) {
-      fetchAdminSoldProducts();
+      return response.data.name;
+    } catch (error) {
+      throw new Error("Error fetching admin ID");
     }
-  }, [adminId, token]);
+  }
+
+  async function fetchAdminSoldProducts() {
+    try {
+      const response = await axios.get(`${serVer}/delivered/${adminIdData}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw new Error("Error fetching sold products");
+    }
+  }
+
+  if (adminIdLoading || soldProductsLoading) {
+    return <FetchLoader />;
+  }
+
+  if (adminIdError || soldProductsError) {
+    return <div>Error: {adminIdError || soldProductsError}</div>;
+  }
 
   return (
-    <div>
-      <h1>Sold Products</h1>
-      <ul>
-        {adminSoldProducts.map((product) => (
-          <li key={product._id}>
-            <p>Product Name: {product.productName}</p>
-            <p>Price: {product.price}</p>
-            <p>Status: {product.status}</p>
-            {/* Add other product details here */}
-          </li>
-        ))}
-      </ul>
+    <div className="adminOrders">
+      <div className="adminOrders-box">
+        <GoBack />
+        <h1>Sold Products</h1>
+        <ul className="adminSold">
+          {adminSoldProducts?.map((product) => (
+            <li key={product._id}>
+              <div>
+                <img src={product.image} alt={product.productName} />
+                <p>{product.productName}</p>
+                <p>{product.price}</p>
+              </div>
+              <p>{product.status}</p>
+              {/* Add other product details here */}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 };

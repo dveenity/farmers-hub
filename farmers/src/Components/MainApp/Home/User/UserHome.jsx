@@ -79,7 +79,6 @@ const UserHome = () => {
   return (
     <div className="home-admin">
       <div className="dashboard">
-        <h2>Dashboard</h2>
         <div>
           <ul>
             <li>

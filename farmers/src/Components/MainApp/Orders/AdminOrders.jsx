@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
+import { useQuery } from "react-query";
 import GoBack from "../../Custom/GoBack";
 import LoadingSpin from "../../Custom/LoadingSpin";
+import FetchLoader from "../../Custom/FetchLoader";
+
+const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const AdminOrders = () => {
-  const [adminOrders, setAdminOrders] = useState([]);
-  const [adminId, setAdminId] = useState(null);
-  const [notificationTotal, setNotificationTotal] = useState(null);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [result, setResult] = useState("");
@@ -16,74 +15,72 @@ const AdminOrders = () => {
 
   const token = localStorage.getItem("farm-users");
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get(`${serVer}/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { name } = response.data;
-        setAdminId(name);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
-
-    fetchUserData();
-  }, [token]);
-
-  // Fetch products with notifications associated with each product
-  const fetchOrdersNotifications = async () => {
+  const fetchUserData = async () => {
     try {
-      const token = localStorage.getItem("farm-users");
-      const response = await axios.get(`${serVer}/orders/${adminId}`, {
+      const response = await axios.get(`${serVer}/home`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const { data } = response;
-      setNotificationTotal(data.length);
-      setAdminOrders(data);
+      return response.data;
     } catch (error) {
-      console.error("Error fetching products:", error);
+      throw new Error("Error fetching user data");
     }
   };
-  // call function
-  fetchOrdersNotifications();
 
-  // update order status
+  const {
+    data: userData,
+    isLoading: userLoading,
+    error: userError,
+  } = useQuery("user", fetchUserData);
+
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get(`${serVer}/orders/${userData.name}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error("Error fetching orders");
+    }
+  };
+
+  const {
+    data: ordersData,
+    isLoading: ordersLoading,
+    error: ordersError,
+    refetch: refetchOrders,
+  } = useQuery("orders", fetchOrders, {
+    enabled: !!userData,
+  });
+
   const toggleOrderStatus = async () => {
     try {
       setStatus(<LoadingSpin />);
       if (!selectedOrder || !selectedStatus) {
         return;
-      } // Return if no order or status selected
+      }
 
-      // Send request to update order status
       await axios.put(`${serVer}/orders/${selectedOrder._id}`, {
         status: selectedStatus,
       });
 
-      // If status is "Delivered", move product to delivered schema
       if (selectedStatus === "Delivered") {
         await axios.put(`${serVer}/deliver-product/${selectedOrder._id}`);
 
         setResult("Order moved to Sold");
-
         setTimeout(() => {
           setResult("");
         }, 2000);
 
-        await fetchOrdersNotifications();
+        await refetchOrders();
 
         setSelectedOrder(null);
         setStatus("Update Status");
       } else {
         setResult("Status updated");
-
         setTimeout(() => {
           setResult(null);
         }, 3000);
@@ -96,15 +93,23 @@ const AdminOrders = () => {
     }
   };
 
+  if (userLoading || ordersLoading) {
+    return <FetchLoader />;
+  }
+
+  if (userError || ordersError) {
+    return <div>Error: {userError || ordersError}</div>;
+  }
+
   return (
     <div className="adminOrders">
       <div className="adminOrders-box">
         <GoBack />
         <h1>
-          Order Notifications <span>{notificationTotal}</span>
+          Order Notifications <span>{ordersData.length}</span>
         </h1>
         <ul className="admin-notification">
-          {adminOrders.map((product) => (
+          {ordersData.map((product) => (
             <li key={product._id}>
               <ul>
                 {product.notifications.map((notification, index) => (
@@ -132,7 +137,7 @@ const AdminOrders = () => {
             <dialog open className="modal">
               <div className="adminOrders-modal">
                 <h2>Order Details</h2>
-                <img src={selectedOrder.image} />
+                <img src={selectedOrder.image} alt="Order" />
                 <ul className="adminOrders-user">
                   <li>Buyer Name: {selectedOrder.username}</li>
                   <li>Product Name: {selectedOrder.productName}</li>

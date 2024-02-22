@@ -10,15 +10,21 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: [
+//       "https://agro-farmers-hub.vercel.app",
+//       "https://farmers-hub-backend.vercel.app",
+//       "http://localhost:5173",
+//     ],
+//     methods: ["POST", "GET"],
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: [
-      "https://agro-farmers-hub.vercel.app",
-      "https://farmers-hub-backend.vercel.app",
-      "http://localhost:5173",
-    ],
-    methods: ["POST", "GET"],
-    credentials: true,
+    origin: "*",
   })
 );
 
@@ -68,16 +74,7 @@ const chatPort = process.env.chatPort;
 const server = http.createServer(app); // Create HTTP server
 const io = socketIo(server, {
   cors: {
-    origin: [
-      `http://localhost:5173`,
-      "http://localhost",
-      "https://agro-farmers-hub.vercel.app",
-      "https://farmers-hub-backend.vercel.app",
-    ],
-    methods: ["GET", "POST", "OPTIONS"],
-    "Access-Control-Allow-Origin": "http://localhost:5173",
-    allowedHeaders: ["my-custom-header"],
-    // credentials: true,
+    origin: "*",
   },
 });
 
