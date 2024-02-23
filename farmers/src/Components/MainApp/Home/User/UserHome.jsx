@@ -85,22 +85,28 @@ const UserHome = () => {
           <ul>
             <li>
               <Link to="/purchases">
-                <strong>Total purchases</strong>
-                <FaChartLine className="dash-icons" />
+                <div>
+                  <strong>Total purchases</strong>
+                  <FaChartLine className="dash-icons" />
+                </div>
                 <p>{salesLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/orders">
-                <strong>Pending Orders</strong>
-                <HiInboxArrowDown className="dash-icons" />
+                <div>
+                  <strong>Pending Orders</strong>
+                  <HiInboxArrowDown className="dash-icons" />
+                </div>
                 <p>{ordersLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/inventory">
-                <strong>Total Inventory</strong>
-                <FaStore className="dash-icons" />
+                <div>
+                  <strong>Total Inventory</strong>
+                  <FaStore className="dash-icons" />
+                </div>
                 <p>{inventoryProducts}</p>
               </Link>
             </li>
