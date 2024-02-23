@@ -29,7 +29,7 @@ const Profile = () => {
   const { register, handleSubmit, formState, reset } = form;
   const { errors, isSubmitting } = formState;
 
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   // fetch user data
   const fetchUser = async () => {

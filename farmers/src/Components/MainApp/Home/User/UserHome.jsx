@@ -5,6 +5,7 @@ import { BsArrowRight } from "react-icons/bs";
 import axios from "axios";
 import { useQuery } from "react-query";
 import FetchLoader from "../../../Custom/FetchLoader";
+import Slider from "./Slider";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
@@ -29,7 +30,7 @@ const UserHome = () => {
     isLoading: ordersLoading,
     isError: ordersError,
   } = useQuery("orders", async () => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.get(`${serVer}/ordersUser/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -43,7 +44,7 @@ const UserHome = () => {
     isLoading: salesLoading,
     isError: salesError,
   } = useQuery("sales", async () => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.get(`${serVer}/purchased/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -54,7 +55,7 @@ const UserHome = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const token = localStorage.getItem("farm-users");
+      const token = localStorage.getItem("farm-users-new");
       const url = `${serVer}/home`;
       const response = await axios.get(url, {
         headers: {
@@ -102,32 +103,9 @@ const UserHome = () => {
       <div className="admin-section">
         <h3>What makes us special</h3>
         <div className="admin-section-in">
-          <ul className="admin-add">
-            <li>
-              <p>
-                <IoMdSpeedometer />
-                <span>Fast Delivery</span>
-              </p>
-            </li>
-            <li>
-              <p>
-                <IoMdSpeedometer />
-                <span>Reliable</span>
-              </p>
-            </li>
-            <li>
-              <p>
-                <IoMdSpeedometer />
-                <span>Order Status</span>
-              </p>
-            </li>
-            <li>
-              <p>
-                <IoMdSpeedometer />
-                <span>Chat with sellers</span>
-              </p>
-            </li>
-          </ul>
+          <div className="user-add">
+            <Slider />
+          </div>
           <div className="admin-view">
             <h4>Explore your activities</h4>
             <ul>

@@ -18,7 +18,7 @@ const Chat = () => {
     // Fetch user data and set username
     const fetchUserData = async () => {
       try {
-        const token = localStorage.getItem("farm-users");
+        const token = localStorage.getItem("farm-users-new");
         const response = await axios.get(`${serVer}/home`, {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -16,7 +16,7 @@ const Activities = () => {
   const [activityId, setActivityId] = useState(null);
   const [product, setProduct] = useState(null);
 
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   const {
     data: activityList,
@@ -131,7 +131,7 @@ const Activities = () => {
 
 async function fetchActivities() {
   try {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const url = `${serVer}/activitiesFetch`;
     const response = await axios.post(url, null, {
       headers: {

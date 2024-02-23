@@ -11,7 +11,7 @@ const Purchases = () => {
   const [userId, setUserId] = useState(null); // admin ID
 
   useEffect(() => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     // Fetch admin ID
     const fetchUserId = async () => {
       try {
@@ -33,7 +33,7 @@ const Purchases = () => {
 
   // Fetch sold products associated with the user ID
   const fetchUserPurchases = useCallback(async () => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     try {
       const response = await axios.get(`${serVer}/purchased/${userId}`, {
         headers: {

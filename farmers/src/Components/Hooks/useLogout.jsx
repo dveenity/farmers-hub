@@ -5,7 +5,7 @@ export const useLogout = () => {
 
   const logout = () => {
     // remove local storage
-    localStorage.removeItem("farm-users");
+    localStorage.removeItem("farm-users-new");
 
     // dispatch logout action
     dispatch({ type: "LOGOUT" });

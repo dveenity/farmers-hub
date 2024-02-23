@@ -803,6 +803,15 @@ html {
   }
 }
 
+/* STYLING USER SECTION */
+.user-add {
+  height: 9rem;
+  max-width: 500px;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 2px 2px 5px var(--bg-color-grid);
+}
+
 /* STYLING INVENTORY */
 .inventory {
   display: flex;

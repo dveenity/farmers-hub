@@ -6,7 +6,7 @@ import FetchLoader from "../../../Custom/FetchLoader";
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const AdminSold = () => {
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   const {
     data: adminIdData,

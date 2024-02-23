@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    const user = localStorage.getItem("farm-users");
+    const user = localStorage.getItem("farm-users-new");
 
     if (user) {
       dispatch({ type: "LOGIN", payload: user });

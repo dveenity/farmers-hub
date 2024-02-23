@@ -8,7 +8,7 @@ import UserHome from "./User/UserHome";
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const fetchUserRole = async () => {
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   const response = await fetch(`${serVer}/home`, {
     headers: {

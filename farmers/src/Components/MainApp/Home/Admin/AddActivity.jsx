@@ -28,7 +28,7 @@ const AddActivity = () => {
     try {
       setSend(LoadingSpin);
       // Retrieve the token from local storage
-      const token = localStorage.getItem("farm-users");
+      const token = localStorage.getItem("farm-users-new");
       const url = `${serVer}/addActivity`;
       const { activityName, activityDescription } = data;
 

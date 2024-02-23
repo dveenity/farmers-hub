@@ -28,7 +28,7 @@ const AddProduct = () => {
   const { errors, isSubmitting, isLoading } = formState;
 
   // Retrieve the token from local storage
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   useEffect(() => {
     const url = `${serVer}/home`;

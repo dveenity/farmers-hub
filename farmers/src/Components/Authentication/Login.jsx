@@ -48,7 +48,7 @@ const Login = () => {
         .then((result) => {
           if (result.status === 200) {
             // save the user to local storage
-            localStorage.setItem("farm-users", result.data);
+            localStorage.setItem("farm-users-new", result.data);
 
             //update the auth Context
             dispatch({ type: "LOGIN", payload: result });

@@ -155,7 +155,7 @@ async function fetchProducts() {
 
 async function fetchUserRole() {
   try {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.get(`${serVer}/home`, {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -15,7 +15,7 @@ const AdminActivities = () => {
   const [activityId, setActivityId] = useState(null);
   const [product, setProduct] = useState(null);
 
-  const token = localStorage.getItem("farm-users");
+  const token = localStorage.getItem("farm-users-new");
 
   const {
     data: userData,
@@ -136,7 +136,7 @@ const AdminActivities = () => {
 
 async function fetchUser() {
   try {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.get(`${serVer}/home`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -150,7 +150,7 @@ async function fetchUser() {
 
 async function fetchActivities() {
   try {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.post(`${serVer}/activitiesFetch`, null, {
       headers: {
         Authorization: `Bearer ${token}`,

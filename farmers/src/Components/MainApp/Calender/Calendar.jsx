@@ -34,7 +34,7 @@ const ProductCalendar = () => {
     const url = `${serVer}/home`;
 
     // Retrieve the token from local storage
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
 
     // Fetch the user's role from the server
     const fetchUserRole = async () => {

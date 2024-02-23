@@ -49,7 +49,7 @@ const fetchAdminData = async (token, adminId) => {
 
 const AdminHome = () => {
   const { data, isLoading, isError } = useQuery("adminData", async () => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
     const response = await axios.get(`${serVer}/home`, {
       headers: {
         Authorization: `Bearer ${token}`,

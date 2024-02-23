@@ -26,10 +26,10 @@ const Signup = () => {
 
   // display agreement note after 5 seconds
   useEffect(() => {
-    // Show the popup after 5 seconds
+    // Show the popup after 2.5 seconds
     const timer = setTimeout(() => {
       setShowUserAgreement(true);
-    }, 5000);
+    }, 2500);
 
     // Clear the timer when the component unmounts to avoid memory leaks
     return () => clearTimeout(timer);
@@ -69,7 +69,7 @@ const Signup = () => {
         .then((result) => {
           if (result.status === 200) {
             // save the user to local storage
-            localStorage.setItem("farm-users", result.data);
+            localStorage.setItem("farm-users-new", result.data);
 
             //update the auth Context
             dispatch({ type: "LOGIN", payload: result });

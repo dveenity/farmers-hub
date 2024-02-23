@@ -35,7 +35,7 @@ const Products = () => {
   const [deleteButton, setDeleteButton] = useState("Delete");
 
   useEffect(() => {
-    const token = localStorage.getItem("farm-users");
+    const token = localStorage.getItem("farm-users-new");
 
     const fetchUserRole = async () => {
       try {
