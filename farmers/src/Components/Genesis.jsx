@@ -31,30 +31,34 @@ const Genesis = () => {
             Designed for admins. <MdOutlineEngineering />
           </p>
         </div>
-        <ul className="genesis-list-one">
-          <li>
-            <FaLeaf className="genesis-icon" />
-            Easy to use
-          </li>
-          <li>
-            <PiCalendarDuotone className="genesis-icon" />
-            Flexible
-          </li>
-          <li>
-            <MdOutlineDiversity1 className="genesis-icon" />
-            Qualified
-          </li>
-          <li>
-            <SiAdguard className="genesis-icon" />
-            Secure
-          </li>
-        </ul>
-        <ul className="genesis-list-two">
-          <li>Place Order</li>
-          <li>Calender</li>
-          <li>Fast Setup</li>
-          <li>Search Products</li>
-        </ul>
+        <div className="genesisLi">
+          <ul className="genesis-list-one">
+            <li>
+              <FaLeaf className="genesis-icon" />
+              Easy to use
+            </li>
+            <li>
+              <PiCalendarDuotone className="genesis-icon" />
+              Flexible
+            </li>
+            <li>
+              <MdOutlineDiversity1 className="genesis-icon" />
+              Qualified
+            </li>
+            <li>
+              <SiAdguard className="genesis-icon" />
+              Secure
+            </li>
+          </ul>
+        </div>
+        <div className="genesisLi">
+          <ul className="genesis-list-two">
+            <li>Place Order</li>
+            <li>Calender</li>
+            <li>Fast Setup</li>
+            <li>Search Products</li>
+          </ul>
+        </div>
       </div>
       <p className="genesis-foot">©2024 AgroFarmers.inc</p>
     </div>
