@@ -839,6 +839,10 @@ html {
       ul {
         li {
           height: 30vh;
+
+          &:nth-child(3) {
+            width: 100%;
+          }
         }
       }
     }
