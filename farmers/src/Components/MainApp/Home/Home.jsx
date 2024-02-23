@@ -37,7 +37,7 @@ const Home = () => {
       <div>
         <div className="home-greet">
           <Clock />
-          <h2>Hi, {name.split(" ")[1]}</h2>
+          <h2>Hi, {name.split(" ")[0]}</h2>
         </div>
         {role === "user" && <UserHome />}
         {role === "admin" && <AdminHome />}

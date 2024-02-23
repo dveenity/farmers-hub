@@ -113,6 +113,7 @@ html {
   width: 100%;
   background-color: var(--main-color);
   border-radius: 1rem 1rem 0 0;
+  padding: 0.2rem 0;
 
   ul {
     display: flex;
@@ -122,8 +123,8 @@ html {
     padding: 0 0.5rem;
 
     a {
-      padding: 1rem 0;
-      font-size: 1.2rem;
+      padding: 1rem 0.3rem;
+      font-size: clamp(1.1rem, 4vw, 1.4rem);
       text-decoration: none;
       color: white;
       display: flex;
@@ -140,8 +141,10 @@ html {
 
   .active {
     color: var(--bg-color-grid); /* Change to the color you want */
-    font-size: 1.2rem;
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
     font-weight: bold; /* Example: Make the font bold */
+    background-color: white;
+    border-radius: 1rem;
 
     .icon {
       width: min-content; /* Set the width of the icon */
@@ -612,7 +615,7 @@ html {
     color: white;
   }
 
-  > div {
+  > :nth-child(2) {
     padding: 0 0.5rem;
     display: flex;
     flex-flow: column;
