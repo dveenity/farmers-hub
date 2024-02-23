@@ -5,6 +5,8 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import FetchLoader from "../../../Custom/FetchLoader";
 import Slider from "./Slider";
+import { FaChartLine, FaStore } from "react-icons/fa";
+import { HiInboxArrowDown } from "react-icons/hi2";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
@@ -83,17 +85,23 @@ const UserHome = () => {
           <ul>
             <li>
               <Link to="/purchases">
-                Total purchases<p>{salesLength}</p>
+                <strong>Total purchases</strong>
+                <FaChartLine className="dash-icons" />
+                <p>{salesLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/orders">
-                Pending Orders<p>{ordersLength}</p>
+                <strong>Pending Orders</strong>
+                <HiInboxArrowDown className="dash-icons" />
+                <p>{ordersLength}</p>
               </Link>
             </li>
             <li>
               <Link to="/inventory">
-                Total Inventory<p>{inventoryProducts}</p>
+                <strong>Total Inventory</strong>
+                <FaStore className="dash-icons" />
+                <p>{inventoryProducts}</p>
               </Link>
             </li>
           </ul>

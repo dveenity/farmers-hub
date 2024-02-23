@@ -1,7 +1,6 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FaCartPlus, FaChartLine, FaStore } from "react-icons/fa";
-import { RxActivityLog } from "react-icons/rx";
+import { FaChartLine, FaStore } from "react-icons/fa";
 import { BsArrowRight } from "react-icons/bs";
 import { HiInboxArrowDown } from "react-icons/hi2";
 import { useQuery } from "react-query";
