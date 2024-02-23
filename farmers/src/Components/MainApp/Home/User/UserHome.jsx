@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { IoMdSpeedometer } from "react-icons/io";
 import { BsArrowRight } from "react-icons/bs";
 import axios from "axios";
 import { useQuery } from "react-query";

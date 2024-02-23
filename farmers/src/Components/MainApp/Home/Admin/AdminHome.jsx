@@ -105,14 +105,13 @@ const AdminHome = () => {
           <ul className="admin-add">
             <li>
               <Link to="/addProduct">
-                <FaCartPlus />
                 Add
                 <span>New Product</span>
               </Link>
             </li>
             <li>
               <Link to="/addActivity">
-                <RxActivityLog /> Add
+                Add
                 <span>New Activity</span>
               </Link>
             </li>
