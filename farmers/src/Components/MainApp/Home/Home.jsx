@@ -4,6 +4,7 @@ import AdminHome from "./Admin/AdminHome";
 import Navigation from "../../Custom/Navigation";
 import FetchLoader from "../../Custom/FetchLoader";
 import UserHome from "./User/UserHome";
+import Logout from "../../Custom/Logout";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
@@ -27,7 +28,15 @@ const Home = () => {
   const { data, isLoading, isError } = useQuery("userRole", fetchUserRole);
 
   if (isLoading) return <FetchLoader />;
-  if (isError) return <div>Error fetching user</div>;
+  if (isError)
+    return (
+      <div>
+        Error fetching user
+        <div>
+          <Logout /> and try logging in again
+        </div>
+      </div>
+    );
 
   const { role, name } = data;
 

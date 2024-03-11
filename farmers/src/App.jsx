@@ -15,6 +15,7 @@ import AdminSold from "./Components/MainApp/Home/Admin/AdminSold";
 import Purchases from "./Components/MainApp/Home/Purchases";
 import Chat from "./Components/MainApp/Profile/Chat/Chat";
 import AdminInventory from "./Components/MainApp/Inventory/AdminInventory";
+import Calculator from "./Components/MainApp/Calculator/Calculator";
 
 function App() {
   const { user } = useAuthContext();
@@ -67,6 +68,10 @@ function App() {
           <Route
             path="/profile"
             element={user ? <Profile /> : <Navigate to="/Login" />}
+          />
+          <Route
+            path="/calculator"
+            element={user ? <Calculator /> : <Navigate to="/Login" />}
           />
         </Routes>
       </BrowserRouter>

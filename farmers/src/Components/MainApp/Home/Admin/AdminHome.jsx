@@ -63,6 +63,26 @@ const AdminHome = () => {
 
   const { filteredProducts, ordersLength, salesLength } = data;
 
+  // create activities object array and map into dom
+  const activitiesAll = [
+    { name: "View your Products", link: "/adminInventory" },
+    { name: "View your Activities", link: "/adminInventory" },
+    { name: "View New Orders", link: "/adminOrders" },
+    { name: "View Sold", link: "/soldOrder" },
+    { name: "View Product Calendar", link: "/calender" },
+    { name: "Purchases", link: "/purchases" },
+    { name: "Estimator", link: "/calculator" },
+  ];
+
+  const activitiesOut = activitiesAll.map((activity, i) => (
+    <li key={i}>
+      <Link to={activity.link}>
+        {activity.name}
+        <BsArrowRight />
+      </Link>
+    </li>
+  ));
+
   return (
     <div className="home-admin">
       <div className="dashboard">
@@ -117,44 +137,7 @@ const AdminHome = () => {
           </ul>
           <div className="admin-view">
             <h4>Explore your activities</h4>
-            <ul>
-              <li>
-                <Link to="/adminInventory">
-                  View your Products
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/adminInventory">
-                  View your Activities
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/adminOrders">
-                  View New Orders
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/soldOrder">
-                  View Sold
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/calendar">
-                  View Product Calendar
-                  <BsArrowRight />
-                </Link>
-              </li>
-              <li>
-                <Link to="/purchases">
-                  Purchases
-                  <BsArrowRight />
-                </Link>
-              </li>
-            </ul>
+            <ul>{activitiesOut}</ul>
           </div>
         </div>
       </div>
