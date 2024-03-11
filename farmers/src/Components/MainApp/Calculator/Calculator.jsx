@@ -7,6 +7,7 @@ const Calculator = () => {
   const [numberOfPond, setNumberOfPond] = useState("");
   const [numberOfDays, setNumberOfDays] = useState("");
   const [estimationResult, setEstimationResult] = useState(null);
+  const [unit, setUnit] = useState("");
 
   const handleCalculateEstimation = (e) => {
     e.preventDefault();
@@ -20,11 +21,19 @@ const Calculator = () => {
     const totalFishes = numberOfFishPerPond * numberOfPond;
 
     // Calculate total feed needed
-    const totalFeedNeeded = totalFishes * feedRatioPerFish * numberOfDays;
+    let totalFeedNeeded = totalFishes * feedRatioPerFish * numberOfDays;
+
+    // Convert to kilograms if total feed needed is above 1000 grams
+    let units = setUnit("grams");
+    if (totalFeedNeeded >= 1000) {
+      totalFeedNeeded /= 1000; // Convert to kilograms
+      units = setUnit("KG");
+    }
 
     // Set the estimation result in state
     setEstimationResult({
       totalFeedNeeded: totalFeedNeeded.toFixed(2),
+      units: units,
       daysFeedLasts: numberOfDays,
     });
   };
@@ -77,7 +86,9 @@ const Calculator = () => {
               <p>
                 Total Feed Needed for{" "}
                 <span>{estimationResult.daysFeedLasts} days</span> is{" "}
-                <span>{estimationResult.totalFeedNeeded} grams</span>
+                <span>
+                  {estimationResult.totalFeedNeeded} {unit}
+                </span>
               </p>
             </div>
           )}
