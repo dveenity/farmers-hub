@@ -1969,7 +1969,8 @@ html {
       align-items: center;
       gap: 2rem;
       background-color: var(--bg-color-grid);
-      height: 60vh;
+      min-height: 60vh;
+      height: min-content;
       color: white;
       border-radius: 1rem;
 
@@ -1990,6 +1991,7 @@ html {
           input {
             border-radius: 0.5rem;
             height: 2.2rem;
+            font-size: clamp(1rem, 3vw, 1.5rem);
             width: 4rem;
             display: flex;
             outline: none;
