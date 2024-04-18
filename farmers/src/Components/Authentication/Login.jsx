@@ -36,12 +36,10 @@ const Login = () => {
       setIsLoading(true);
       setSend(LoadingSpin);
 
-      const { name, username, email, password } = data;
+      const { email, password } = data;
 
       await axios
         .post(url, {
-          name,
-          username,
           email,
           password,
         })
