@@ -65,11 +65,11 @@ const AdminHome = () => {
 
   // create activities object array and map into dom
   const activitiesAll = [
+    { name: "Learning Hub", link: "/tutorial" },
     { name: "View your Products", link: "/adminInventory" },
     { name: "View your Activities", link: "/adminInventory" },
     { name: "View New Orders", link: "/adminOrders" },
     { name: "View Sold", link: "/soldOrder" },
-    { name: "View Product Calendar", link: "/calender" },
     { name: "Purchases", link: "/purchases" },
     { name: "Estimator", link: "/calculator" },
   ];

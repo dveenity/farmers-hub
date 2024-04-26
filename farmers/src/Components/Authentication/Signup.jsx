@@ -210,10 +210,11 @@ const Signup = () => {
                     required: "role is required",
                   })}
                   id="role">
-                  <option disabled selected></option>
+                  <option value="" disabled selected>
+                    Select a role
+                  </option>
                   <option value="admin">Farmer</option>
-                  <option value="user">Stakeholder</option>
-                  <option value="user">Partner</option>
+                  <option value="user">Buyer</option>
                 </select>
                 <p>{errors.role?.message}</p>
               </div>

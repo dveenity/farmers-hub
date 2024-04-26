@@ -1,7 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
 import { useQuery, useMutation } from "react-query";
-import Navigation from "../../Custom/Navigation";
 import FetchLoader from "../../Custom/FetchLoader";
 import { FcIdea } from "react-icons/fc";
 import { TbCurrencyNaira } from "react-icons/tb";
@@ -151,7 +150,6 @@ const Orders = () => {
           </dialog>
         </div>
       )}
-      <Navigation />
     </div>
   );
 };

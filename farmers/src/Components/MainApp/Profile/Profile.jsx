@@ -6,8 +6,6 @@ import { TbBuildingEstate } from "react-icons/tb";
 import { SiUnitednations } from "react-icons/si";
 import { FaHome, FaPhone, FaUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
-import Navigation from "../../Custom/Navigation";
-import Logout from "../../Custom/Logout";
 import LoadingSpin from "../../Custom/LoadingSpin";
 import FetchLoader from "../../Custom/FetchLoader";
 
@@ -258,9 +256,7 @@ const Profile = () => {
             </div>
           )}
           <div className="profile-chat">
-            <p>
-              Are you a stakeholder, partner or Farmer... Click here to chat now
-            </p>
+            <p>Are you a buyer or a Farmer... Click here to chat now</p>
             <Link to="/chat">
               Chat
               <IoIosChatbubbles />
@@ -268,8 +264,6 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <Logout />
-      <Navigation />
     </div>
   );
 };

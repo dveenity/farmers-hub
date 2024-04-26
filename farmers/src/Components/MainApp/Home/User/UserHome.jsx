@@ -123,8 +123,8 @@ const UserHome = () => {
             <h4>Explore your activities</h4>
             <ul>
               <li>
-                <Link to="/calendar">
-                  Product Availability Calendar
+                <Link to="/tutorial">
+                  Learning Hub
                   <BsArrowRight />
                 </Link>
               </li>

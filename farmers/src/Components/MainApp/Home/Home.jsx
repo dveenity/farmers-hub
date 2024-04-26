@@ -1,7 +1,6 @@
 import { useQuery } from "react-query";
 import Clock from "../../Custom/Clock";
 import AdminHome from "./Admin/AdminHome";
-import Navigation from "../../Custom/Navigation";
 import FetchLoader from "../../Custom/FetchLoader";
 import UserHome from "./User/UserHome";
 import Logout from "../../Custom/Logout";
@@ -42,7 +41,10 @@ const Home = () => {
 
   return (
     <div className="home">
-      <h1>Agro Farmer&apos;s Hub</h1>
+      <div>
+        <h1>Agro Farmer&apos;s Hub</h1>
+        <Logout />
+      </div>
       <div>
         <div className="home-greet">
           <Clock />
@@ -51,7 +53,6 @@ const Home = () => {
         {role === "user" && <UserHome />}
         {role === "admin" && <AdminHome />}
       </div>
-      <Navigation />
     </div>
   );
 };

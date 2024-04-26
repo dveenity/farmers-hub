@@ -1,6 +1,5 @@
 import { useState } from "react";
 import GoBack from "../../Custom/GoBack";
-import Scale from "../../../assets/images/scale.jpg";
 
 const Calculator = () => {
   const [numberOfFishPerPond, setNumberOfFishPerPond] = useState("");
@@ -41,7 +40,6 @@ const Calculator = () => {
   return (
     <div className="calculator">
       <GoBack />
-      <img src={Scale} loading="lazy" alt="scale" />
       <div>
         <div>
           <h2>Feed calculator</h2>

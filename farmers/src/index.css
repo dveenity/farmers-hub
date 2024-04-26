@@ -187,6 +187,7 @@ html {
   justify-content: center;
   align-items: center;
   overflow-y: hidden;
+  z-index: 3;
 }
 
 .modal {
@@ -200,24 +201,6 @@ html {
   max-height: 50rem;
 
   overflow: hidden;
-}
-
-/* STYLING PRODUCT AVAILABILITY CALENDAR */
-.rbc-event {
-  background-color: var(--main-color) !important;
-  font-size: 0.6rem;
-  font-family: var(--font-family) !important;
-}
-.rbc-month-header {
-  background-color: rgb(0, 44, 0);
-  color: white;
-}
-.rbc-row-segment {
-  button {
-    background-color: black;
-    color: white !important;
-    font-size: clamp(0.7rem, 4vw, 1rem);
-  }
 }
 
 /* STYLING THE PRE LOGIN HOME COMPONENT */
@@ -633,6 +616,11 @@ html {
     border-radius: 1rem;
     font-size: clamp(1rem, 1rem, 1.2rem);
     font-weight: bold;
+    color: black;
+
+    option {
+      color: black;
+    }
   }
 }
 /* Tablet and larger screens */
@@ -673,13 +661,17 @@ html {
   background-color: white;
 
   h1 {
-    text-align: center;
     font-size: clamp(1.2rem, 3vw, 2rem);
     text-transform: uppercase;
-    background-color: green;
-    padding: 0.3rem;
-    width: 100%;
     color: white;
+  }
+
+  > :nth-child(1) {
+    background-color: green;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
   }
 
   > :nth-child(2) {
@@ -1489,7 +1481,7 @@ html {
 .log-out {
   appearance: none;
   outline: none;
-  font-size: clamp(1.5rem, 8vw, 2rem);
+  font-size: clamp(1.3rem, 3vw, 1.6rem);
   background-color: red;
   color: white;
   font-weight: bold;
@@ -1499,7 +1491,7 @@ html {
   transition: 0.1s ease-in-out;
 
   &:hover {
-    transform: scale(1.02);
+    transform: scale(1.05);
   }
 }
 
@@ -1937,14 +1929,7 @@ html {
   min-height: 100vh;
   min-height: 100dvh;
 
-  img {
-    display: block;
-    aspect-ratio: 16 / 9;
-    border: 1px solid var(--bg-color-grid);
-    border-radius: 1rem;
-  }
-
-  > :nth-child(3) {
+  > :nth-child(2) {
     display: flex;
     flex-flow: column;
     gap: 1rem;
@@ -1960,6 +1945,7 @@ html {
       p {
         font-size: clamp(1rem, 3vw, 1.5rem);
         font-style: italic;
+        text-align: center;
       }
     }
     > :nth-child(2) {
@@ -2022,6 +2008,36 @@ html {
             color: rgb(0, 255, 0);
           }
         }
+      }
+    }
+  }
+}
+
+/* TUTORIAL ROUTE */
+.tutorial {
+  padding: 0.5rem;
+  display: flex;
+  flex-flow: column;
+  gap: 2rem;
+
+  .video-container {
+    display: flex;
+    flex-flow: column;
+    gap: 2rem;
+
+    > div {
+      display: flex;
+      flex-flow: column;
+      gap: 0.3rem;
+
+      h2 {
+        font-size: clamp(1rem, 3vw, 1.5rem);
+      }
+
+      > :last-child {
+        border: 0.2rem solid green;
+        border-radius: 1rem;
+        overflow: hidden;
       }
     }
   }

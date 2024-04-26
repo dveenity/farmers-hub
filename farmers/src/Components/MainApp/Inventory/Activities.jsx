@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
-import Navigation from "../../Custom/Navigation";
 import FetchLoader from "../../Custom/FetchLoader";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
@@ -124,7 +123,6 @@ const Activities = () => {
           </dialog>
         </div>
       )}
-      <Navigation />
     </div>
   );
 };

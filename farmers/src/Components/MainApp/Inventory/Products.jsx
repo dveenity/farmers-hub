@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
-import Navigation from "../../Custom/Navigation";
 import { TbCurrencyNaira } from "react-icons/tb";
 import FetchLoader from "../../Custom/FetchLoader";
 import LoadingSpin from "../../Custom/LoadingSpin";
@@ -187,7 +186,6 @@ const Products = () => {
           </dialog>
         </div>
       )}
-      <Navigation />
     </div>
   );
 };

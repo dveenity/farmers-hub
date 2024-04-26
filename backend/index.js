@@ -37,7 +37,6 @@ const User = require("./Models/Users");
 const Products = require("./Models/Products");
 const Orders = require("./Models/Orders");
 const Activity = require("./Models/Activity");
-const Calendar = require("./Models/Calendar");
 const requireAuth = require("./Models/requireAuth");
 const Delivered = require("./Models/Delivered");
 
@@ -569,59 +568,6 @@ app.post("/activitiesFetch", async (req, res) => {
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).send("Internal server error");
-  }
-});
-
-// Post calendar details to calendar schema DB
-app.post("/productCalender", async (req, res) => {
-  try {
-    const { username, productName, startDate, endDate } = req.body;
-
-    // Create a new calendar document
-    const newCalendar = new Calendar({
-      postedBy: username,
-      productName,
-      startDate,
-      endDate,
-    });
-
-    // Save the new calendar document
-    await newCalendar.save();
-
-    // Send the newly created calendar document in the response
-    res.status(201).json(newCalendar);
-  } catch (error) {
-    console.error("Error adding calendar details:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Endpoint to fetch calendar data from the database
-app.get("/calendar", async (req, res) => {
-  try {
-    // Fetch all calendar documents from the database
-    const calendars = await Calendar.find();
-
-    // Send the fetched calendar data in the response
-    res.status(200).json(calendars);
-  } catch (error) {
-    console.error("Error fetching calendar data:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-// Endpoint to delete calendar data from the database by Id
-app.delete("/deleteCalendar", async (req, res) => {
-  try {
-    const { calendarProductId } = req.body;
-    // Fetch all calendar documents from the database
-    const deletedCalendar = await Calendar.findByIdAndDelete(calendarProductId);
-
-    // Send the fetched calendar data in the response
-    res.status(200).json(deletedCalendar);
-  } catch (error) {
-    console.error("Error fetching calendar data:", error);
-    res.status(500).json({ error: "Internal server error" });
   }
 });
 
