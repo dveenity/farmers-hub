@@ -2019,6 +2019,7 @@ html {
   display: flex;
   flex-flow: column;
   gap: 2rem;
+  margin-bottom: 2rem;
 
   .video-container {
     display: flex;

@@ -15,6 +15,8 @@ const Tutorial = () => {
   // YouTube video URLs
   const video1 = "L0GXXTZe-jg";
   const video2 = "Q2nZcPxleuo";
+  const video3 = "3BXCE3s_9uI";
+  const video4 = "SwDJ6IVeABA";
 
   return (
     <div className="tutorial">
@@ -33,6 +35,17 @@ const Tutorial = () => {
         <div>
           <h2>From Eggs To Fish; FISH BREEDING AND MANAGEMENT Part 2</h2>
           <YouTube videoId={video2} opts={opts} />
+        </div>
+        <div>
+          <h2>Growing Catfish at Home</h2>
+          <YouTube videoId={video3} opts={opts} />
+        </div>
+        <div>
+          <h2>
+            Catfish Farming Business, Millions of Profit! How to start a Catfish
+            Farm
+          </h2>
+          <YouTube videoId={video4} opts={opts} />
         </div>
       </div>
     </div>
