@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 import GoBack from "../../../Custom/GoBack";
+// Retrieve the token from local storage
+const token = localStorage.getItem("farm-users-new");
 
 import { CgNametag } from "react-icons/cg";
 import { MdDescription } from "react-icons/md";
@@ -15,8 +17,7 @@ const AddProduct = () => {
   const [send, setSend] = useState("Add Product");
   // State to store and display result data
   const [resultMessage, setResultMessage] = useState("");
-  // State to store the user's role
-  const [role, setRole] = useState("");
+
   // store image in state
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -26,32 +27,6 @@ const AddProduct = () => {
   const form = useForm();
   const { register, handleSubmit, formState, reset } = form;
   const { errors, isSubmitting, isLoading } = formState;
-
-  // Retrieve the token from local storage
-  const token = localStorage.getItem("farm-users-new");
-
-  useEffect(() => {
-    const url = `${serVer}/home`;
-
-    // Fetch the user's role from the server
-    const fetchUserRole = async () => {
-      try {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const { data } = response;
-        setRole(data.role);
-      } catch (error) {
-        console.error("Error fetching user", error);
-        setRole(error.data.role);
-      }
-    };
-
-    fetchUserRole();
-  }, [token]);
 
   const onSubmit = async (data) => {
     try {
@@ -119,7 +94,7 @@ const AddProduct = () => {
     }
   };
 
-  return role === "admin" ? (
+  return (
     <div className="add-a-product">
       {/* Add Farm Products */}
       <div className="add-form">
@@ -210,8 +185,6 @@ const AddProduct = () => {
         <p className="result">{resultMessage}</p>
       </div>
     </div>
-  ) : (
-    <div>Unauthorized</div>
   );
 };
 

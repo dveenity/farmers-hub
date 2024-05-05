@@ -1,67 +1,64 @@
-import axios from "axios";
 import { Link } from "react-router-dom";
 import { FaChartLine, FaStore } from "react-icons/fa";
 import { BsArrowRight } from "react-icons/bs";
 import { HiInboxArrowDown } from "react-icons/hi2";
 import { useQuery } from "react-query";
 import FetchLoader from "../../../Custom/FetchLoader";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
-
-const fetchAdminData = async (token, adminId) => {
-  const urls = [
-    `${serVer}/productsFetch`,
-    `${serVer}/home`,
-    `${serVer}/orders/${adminId}`,
-    `${serVer}/delivered/${adminId}`,
-  ];
-
-  const [productsResponse, loggedInUserResponse, ordersResponse, soldResponse] =
-    await Promise.all(
-      urls.map((url) =>
-        url.includes("productsFetch")
-          ? axios.post(url)
-          : axios.get(url, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            })
-      )
-    );
-
-  const products = productsResponse.data;
-  const loggedInUser = loggedInUserResponse.data;
-  const orders = ordersResponse.data;
-  const sold = soldResponse.data;
-
-  const filteredProducts = products.filter(
-    (product) => product.username === adminId
-  );
-
-  return {
-    filteredProducts: filteredProducts.length,
-    ordersLength: orders.length,
-    salesLength: sold.length,
-    adminId: loggedInUser.name,
-  };
-};
+import {
+  fetchAdminDeliveredOrders,
+  fetchAdminOrders,
+  fetchProducts,
+  fetchUser,
+} from "../../../Hooks/useFetch";
 
 const AdminHome = () => {
-  const { data, isLoading, isError } = useQuery("adminData", async () => {
-    const token = localStorage.getItem("farm-users-new");
-    const response = await axios.get(`${serVer}/home`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const loggedInUser = response.data;
-    return fetchAdminData(token, loggedInUser.name);
-  });
+  // fetch admin details
+  const { data, isLoading, isError } = useQuery("adminData", fetchUser);
 
-  if (isLoading) return <FetchLoader />;
-  if (isError) return <div>Error fetching data</div>;
+  // fetch products
+  const {
+    data: productsData,
+    isLoading: productsIsLoading,
+    isError: productsIsError,
+  } = useQuery("products", fetchProducts);
 
-  const { filteredProducts, ordersLength, salesLength } = data;
+  // fetch admin Orders
+  const {
+    data: ordersData,
+    isLoading: ordersIsLoading,
+    isError: ordersIsError,
+  } = useQuery("adminOrders", () => fetchAdminOrders(username));
+
+  // fetch admin delivered orders
+  const {
+    data: deliveredOrdersData,
+    isLoading: deliveredOrdersIsLoading,
+    isError: deliveredOrdersIsError,
+  } = useQuery("deliveredOrders", () => fetchAdminDeliveredOrders(username));
+
+  if (
+    isLoading ||
+    productsIsLoading ||
+    ordersIsLoading ||
+    deliveredOrdersIsLoading
+  ) {
+    return <FetchLoader />;
+  }
+  if (isError || productsIsError || ordersIsError || deliveredOrdersIsError) {
+    return <div>Error fetching data</div>;
+  }
+
+  const { username } = data;
+
+  const filteredProducts = productsData.filter(
+    (product) => product.username === username
+  );
+
+  const filteredProductsLength = filteredProducts?.length;
+
+  const ordersLength = ordersData?.length;
+
+  const salesLength = deliveredOrdersData?.length;
 
   // create activities object array and map into dom
   const activitiesAll = [
@@ -112,7 +109,7 @@ const AdminHome = () => {
                   <strong>Inventory</strong>
                   <FaStore className="dash-icons" />
                 </div>
-                <p>{filteredProducts}</p>
+                <p>{filteredProductsLength}</p>
               </Link>
             </li>
           </ul>

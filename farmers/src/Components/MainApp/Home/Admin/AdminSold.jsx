@@ -20,7 +20,6 @@ const AdminSold = () => {
     data: adminSoldProducts,
     isLoading: soldProductsLoading,
     error: soldProductsError,
-    refetch: refetchSoldProducts,
   } = useQuery(["adminSoldProducts", adminIdData], fetchAdminSoldProducts, {
     enabled: !!adminIdData,
   });

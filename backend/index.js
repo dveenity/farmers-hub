@@ -252,7 +252,7 @@ app.post("/addActivity", upload.single("image"), async (req, res) => {
 });
 
 //fetch products from database
-app.post("/productsFetch", async (req, res) => {
+app.get("/productsFetch", async (req, res) => {
   try {
     // Fetch products from the database
     const products = await Products.find().sort({

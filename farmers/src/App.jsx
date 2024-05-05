@@ -37,7 +37,13 @@ const Calculator = lazy(() =>
   import("./Components/MainApp/Calculator/Calculator")
 );
 
-const showNavigationRoutes = ["/home", "/profile", "/inventory", "/orders"];
+const showNavigationRoutes = [
+  "/home",
+  "/profile",
+  "/inventory",
+  "/orders",
+  "/adminInventory",
+];
 
 function App() {
   const { user } = useAuthContext();
