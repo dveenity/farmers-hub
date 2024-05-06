@@ -6,7 +6,7 @@ const Logout = () => {
   const { logout } = useLogout();
 
   const logOut = async () => {
-    await queryClient.clear(); // Clear all cached data
+    queryClient.clear(); // Clear all cached data
     logout();
     window.location.reload(); // reload page
   };

@@ -69,19 +69,38 @@ function App() {
             path="/login"
             element={!user ? <Login /> : <Navigate to="/home" />}
           />
-          <Route exact path="/home" element={user && <Home />} />
-          <Route path="/addProduct" element={user && <AddProduct />} />
-          <Route path="/addActivity" element={user && <AddActivity />} />
-          <Route path="/tutorial" element={<Tutorial />} />
-          <Route path="/inventory" element={user && <Inventory />} />
-          <Route path="/adminInventory" element={user && <AdminInventory />} />
-          <Route path="/adminOrders" element={<AdminOrders />} />
-          <Route exact path="/soldOrder" element={<AdminSold />} />
-          <Route path="/purchases" element={<Purchases />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/orders" element={user && <Orders />} />
-          <Route path="/profile" element={user && <Profile />} />
-          <Route path="/calculator" element={user && <Calculator />} />
+          <Route exact path="/home" element={user ? <Home /> : <Login />} />
+          <Route
+            path="/addProduct"
+            element={user ? <AddProduct /> : <Login />}
+          />
+          <Route
+            path="/addActivity"
+            element={user ? <AddActivity /> : <Login />}
+          />
+          <Route path="/tutorial" element={user ? <Tutorial /> : <Login />} />
+          <Route path="/inventory" element={user ? <Inventory /> : <Login />} />
+          <Route
+            path="/adminInventory"
+            element={user ? <AdminInventory /> : <Login />}
+          />
+          <Route
+            path="/adminOrders"
+            element={user ? <AdminOrders /> : <Login />}
+          />
+          <Route
+            exact
+            path="/soldOrder"
+            element={user ? <AdminSold /> : <Login />}
+          />
+          <Route path="/purchases" element={user ? <Purchases /> : <Login />} />
+          <Route path="/chat" element={user ? <Chat /> : <Login />} />
+          <Route path="/orders" element={user ? <Orders /> : <Login />} />
+          <Route path="/profile" element={user ? <Profile /> : <Login />} />
+          <Route
+            path="/calculator"
+            element={user ? <Calculator /> : <Login />}
+          />
         </Routes>
       </Suspense>
       {showNavigation && <Navigation />}
