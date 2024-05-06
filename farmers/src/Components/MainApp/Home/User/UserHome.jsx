@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { BsArrowRight } from "react-icons/bs";
-import axios from "axios";
 import { useQuery } from "react-query";
 import FetchLoader from "../../../Custom/FetchLoader";
 import Slider from "./Slider";
@@ -11,8 +10,7 @@ import {
   fetchUserOrders,
   fetchUserPurchases,
 } from "../../../Hooks/useFetch";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
+import PropTypes from "prop-types";
 
 const UserHome = ({ user }) => {
   const { name } = user;
@@ -49,7 +47,7 @@ const UserHome = ({ user }) => {
         <div>
           <ul>
             <li>
-              <Link to="/purchases">
+              <Link to="/purchases" state={{ name }}>
                 <div>
                   <strong>Total purchases</strong>
                   <FaChartLine className="dash-icons" />
@@ -58,7 +56,7 @@ const UserHome = ({ user }) => {
               </Link>
             </li>
             <li>
-              <Link to="/orders">
+              <Link to="/orders" state={{ ordersData }}>
                 <div>
                   <strong>Pending Orders</strong>
                   <HiInboxArrowDown className="dash-icons" />
@@ -99,6 +97,10 @@ const UserHome = ({ user }) => {
       </div>
     </div>
   );
+};
+
+UserHome.propTypes = {
+  user: PropTypes.object.isRequired,
 };
 
 export default UserHome;
