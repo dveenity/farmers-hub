@@ -557,7 +557,7 @@ app.put("/:orderId", async (req, res) => {
 });
 
 // fetch activities from database
-app.post("/activitiesFetch", async (req, res) => {
+app.get("/activitiesFetch", async (req, res) => {
   try {
     // Fetch activity from the database
     const activity = await Activity.find().sort({

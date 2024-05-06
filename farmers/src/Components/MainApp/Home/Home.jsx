@@ -4,27 +4,10 @@ import AdminHome from "./Admin/AdminHome";
 import FetchLoader from "../../Custom/FetchLoader";
 import UserHome from "./User/UserHome";
 import Logout from "../../Custom/Logout";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
-
-const fetchUserRole = async () => {
-  const token = localStorage.getItem("farm-users-new");
-
-  const response = await fetch(`${serVer}/home`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
-  }
-
-  return response.json();
-};
+import { fetchUser } from "../../Hooks/useFetch";
 
 const Home = () => {
-  const { data, isLoading, isError } = useQuery("userRole", fetchUserRole);
+  const { data, isLoading, isError } = useQuery("user", fetchUser);
 
   if (isLoading) return <FetchLoader />;
   if (isError)
@@ -50,8 +33,8 @@ const Home = () => {
           <Clock />
           <h2>Hi, {name.split(" ")[0]}</h2>
         </div>
-        {role === "user" && <UserHome />}
-        {role === "admin" && <AdminHome />}
+        {role === "user" && <UserHome user={data} />}
+        {role === "admin" && <AdminHome user={data} />}
       </div>
     </div>
   );

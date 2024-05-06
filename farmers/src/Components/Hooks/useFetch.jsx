@@ -33,6 +33,22 @@ export const fetchProducts = async () => {
   return response.json();
 };
 
+// route to fetch activities
+export const fetchActivities = async () => {
+  const url = `${serVer}/activitiesFetch`;
+  const response = await fetch(url, null, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+};
+
 // hook to fetch admin orders
 export const fetchAdminOrders = async (adminId) => {
   const url = `${serVer}/orders/${adminId}`;
@@ -51,6 +67,23 @@ export const fetchAdminDeliveredOrders = async (adminId) => {
   const url = `${serVer}/delivered/${adminId}`;
 
   const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+};
+
+// fetch successful deliveries/purchases
+export const fetchUserPurchases = async (userId) => {
+  const url = `${serVer}/purchased/${userId}`;
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("Network response was not ok");

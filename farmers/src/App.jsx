@@ -69,14 +69,14 @@ function App() {
             path="/login"
             element={!user ? <Login /> : <Navigate to="/home" />}
           />
-          <Route path="/home" element={user && <Home />} />
+          <Route exact path="/home" element={user && <Home />} />
           <Route path="/addProduct" element={user && <AddProduct />} />
           <Route path="/addActivity" element={user && <AddActivity />} />
           <Route path="/tutorial" element={<Tutorial />} />
           <Route path="/inventory" element={user && <Inventory />} />
           <Route path="/adminInventory" element={user && <AdminInventory />} />
           <Route path="/adminOrders" element={<AdminOrders />} />
-          <Route path="/soldOrder" element={<AdminSold />} />
+          <Route exact path="/soldOrder" element={<AdminSold />} />
           <Route path="/purchases" element={<Purchases />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/orders" element={user && <Orders />} />

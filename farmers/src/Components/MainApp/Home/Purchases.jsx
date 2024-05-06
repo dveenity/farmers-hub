@@ -1,75 +1,47 @@
-import { useCallback, useEffect, useState } from "react";
-import axios from "axios";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
 import GoBack from "../../Custom/GoBack";
 import { TbCurrencyNaira } from "react-icons/tb";
+import { useLocation } from "react-router-dom";
+import { fetchUserPurchases } from "../../Hooks/useFetch";
+import FetchLoader from "../../Custom/FetchLoader";
+import { useQuery } from "react-query";
 
 const Purchases = () => {
-  const [result, setResult] = useState("");
-  const [userPurchasedProducts, setUserPurchasedProducts] = useState(null);
-  const [userId, setUserId] = useState(null); // admin ID
+  // Access data passed via link from adminHome component
+  const location = useLocation();
+  const { state } = location;
+  const { name } = state;
 
-  useEffect(() => {
-    const token = localStorage.getItem("farm-users-new");
-    // Fetch admin ID
-    const fetchUserId = async () => {
-      try {
-        const response = await axios.get(`${serVer}/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // Fetch products
+  const {
+    data: purchasesData,
+    isLoading: purchasesIsLoading,
+    isError: purchasesIsError,
+  } = useQuery("purchases", () => fetchUserPurchases(name));
 
-        const { username } = response.data;
-        setUserId(username);
-      } catch (error) {
-        console.error("Error fetching admin ID:", error);
-      }
-    };
+  if (purchasesIsLoading) {
+    return <FetchLoader />;
+  }
 
-    fetchUserId();
-  }, []);
+  if (purchasesIsError) {
+    return <div>Error fetching data</div>;
+  }
 
-  // Fetch sold products associated with the user ID
-  const fetchUserPurchases = useCallback(async () => {
-    const token = localStorage.getItem("farm-users-new");
-    try {
-      const response = await axios.get(`${serVer}/purchased/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  const hasPurchases = purchasesData?.length > 0;
 
-      const { data } = response;
-
-      if (data.length === 0) {
-        setResult("No successful purchases/deliveries yet");
-      } else {
-        const purchaseOut = data.map((product) => (
-          <li key={product._id}>
-            <div>
-              <img src={product.image} alt={product.productName} />
-              <p>{product.productName}</p>
-              <p>
-                <TbCurrencyNaira />
-                {product.price}
-              </p>
-            </div>
-            <strong>{product.status}</strong>
-            {/* Add other product details here */}
-          </li>
-        ));
-        setUserPurchasedProducts(purchaseOut);
-      }
-    } catch (error) {
-      console.error("Error fetching sold products:", error);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    fetchUserPurchases();
-  }, [fetchUserPurchases]);
+  const purchaseOut = purchasesData.map((product) => (
+    <li key={product._id}>
+      <div>
+        <img src={product.image} alt={product.productName} />
+        <p>{product.productName}</p>
+        <p>
+          <TbCurrencyNaira />
+          {product.price}
+        </p>
+      </div>
+      <strong>{product.status}</strong>
+      {/* Add other product details here */}
+    </li>
+  ));
 
   return (
     <div className="purchased">
@@ -78,8 +50,17 @@ const Purchases = () => {
           <GoBack />
           <h1>Purchased</h1>
         </div>
-        <ul>{userPurchasedProducts}</ul>
-        <p>{result}</p>
+        <ul>
+          {hasPurchases ? (
+            purchaseOut
+          ) : (
+            <p>
+              Manage and view your successful deliveries here,
+              <br />
+              No successful purchase/delivery yet
+            </p>
+          )}
+        </ul>
       </div>
     </div>
   );

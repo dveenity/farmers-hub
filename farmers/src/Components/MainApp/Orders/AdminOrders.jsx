@@ -1,60 +1,42 @@
 import { useState } from "react";
 import axios from "axios";
-import { useQuery } from "react-query";
 import GoBack from "../../Custom/GoBack";
 import LoadingSpin from "../../Custom/LoadingSpin";
+import { useLocation } from "react-router-dom";
+import { fetchAdminOrders } from "../../Hooks/useFetch";
+import { useQuery } from "react-query";
 import FetchLoader from "../../Custom/FetchLoader";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
 const AdminOrders = () => {
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [result, setResult] = useState("");
   const [status, setStatus] = useState("Update Status");
 
-  const token = localStorage.getItem("farm-users-new");
+  // Access data passed via link from adminHome component
+  const location = useLocation();
+  const { state } = location;
+  const { name } = state;
 
-  const fetchUserData = async () => {
-    try {
-      const response = await axios.get(`${serVer}/home`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error("Error fetching user data");
-    }
-  };
-
-  const {
-    data: userData,
-    isLoading: userLoading,
-    error: userError,
-  } = useQuery("user", fetchUserData);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get(`${serVer}/orders/${userData.name}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error("Error fetching orders");
-    }
-  };
-
+  // Fetch admin Orders
   const {
     data: ordersData,
-    isLoading: ordersLoading,
-    error: ordersError,
+    isLoading: ordersIsLoading,
+    isError: ordersIsError,
     refetch: refetchOrders,
-  } = useQuery("orders", fetchOrders, {
-    enabled: !!userData,
-  });
+  } = useQuery("adminOrders", () => fetchAdminOrders(name));
+
+  if (ordersIsLoading) {
+    return <FetchLoader />;
+  }
+
+  if (ordersIsError) {
+    return <div>Error fetching data</div>;
+  }
+
+  const hasOrders = ordersData?.length > 0;
 
   const toggleOrderStatus = async () => {
     try {
@@ -77,29 +59,22 @@ const AdminOrders = () => {
 
         await refetchOrders();
 
-        setSelectedOrder(null);
-        setStatus("Update Status");
+        setSelectedOrder(false);
       } else {
-        setResult("Status updated");
-        setTimeout(() => {
-          setResult(null);
-        }, 3000);
-        setStatus("Update Status");
+        await setResult("Status updated");
+        await refetchOrders();
+        setSelectedOrder(false);
       }
     } catch (error) {
-      console.error("Error updating order status:", error);
+      setResult("Failed! try again");
     } finally {
       setStatus("Update Status");
+
+      setTimeout(() => {
+        setResult(null);
+      }, 3000);
     }
   };
-
-  if (userLoading || ordersLoading) {
-    return <FetchLoader />;
-  }
-
-  if (userError || ordersError) {
-    return <div>Error: {userError || ordersError}</div>;
-  }
 
   return (
     <div className="adminOrders">
@@ -109,28 +84,35 @@ const AdminOrders = () => {
           Order Notifications <span>{ordersData.length}</span>
         </h1>
         <ul className="admin-notification">
-          {ordersData.map((product) => (
-            <li key={product._id}>
-              <ul>
-                {product.notifications.map((notification, index) => (
-                  <li key={index} className="admin-notification-li">
-                    <p>{notification.message}</p>
-                    <div>
-                      <strong>{notification.status}</strong>
-                      <button
-                        onClick={() => {
-                          const orderStatus = product.status;
-                          setSelectedStatus(orderStatus);
-                          setSelectedOrder(product);
-                        }}>
-                        View Order
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
+          {hasOrders ? (
+            ordersData.map((product) => (
+              <li key={product._id}>
+                <ul>
+                  {product.notifications.map((notification, index) => (
+                    <li key={index} className="admin-notification-li">
+                      <p>{notification.message}</p>
+                      <div>
+                        <strong>{notification.status}</strong>
+                        <button
+                          onClick={() => {
+                            const orderStatus = product.status;
+                            setSelectedStatus(orderStatus);
+                            setSelectedOrder(product);
+                          }}>
+                          View Order
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))
+          ) : (
+            <p>
+              View and manage your new and pending orders here! <br />
+              You currently have no new orders
+            </p>
+          )}
         </ul>
         {selectedOrder && (
           <div className="modal-overlay">

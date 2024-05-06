@@ -1,64 +1,15 @@
-import axios from "axios";
-import { useQuery } from "react-query";
 import GoBack from "../../../Custom/GoBack";
-import FetchLoader from "../../../Custom/FetchLoader";
-
-const serVer = `https://farmers-hub-backend.vercel.app`;
+import { useLocation } from "react-router-dom";
 
 const AdminSold = () => {
-  const token = localStorage.getItem("farm-users-new");
+  // Access data passed via link from adminHome component
+  const location = useLocation();
 
-  const {
-    data: adminIdData,
-    isLoading: adminIdLoading,
-    error: adminIdError,
-  } = useQuery("adminId", fetchAdminId, {
-    enabled: !!token,
-  });
+  const { state } = location;
+  const { deliveredOrdersData } = state;
+  const adminSoldProducts = deliveredOrdersData;
 
-  const {
-    data: adminSoldProducts,
-    isLoading: soldProductsLoading,
-    error: soldProductsError,
-  } = useQuery(["adminSoldProducts", adminIdData], fetchAdminSoldProducts, {
-    enabled: !!adminIdData,
-  });
-
-  async function fetchAdminId() {
-    try {
-      const response = await axios.get(`${serVer}/home`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data.name;
-    } catch (error) {
-      throw new Error("Error fetching admin ID");
-    }
-  }
-
-  async function fetchAdminSoldProducts() {
-    try {
-      const response = await axios.get(`${serVer}/delivered/${adminIdData}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      return response.data;
-    } catch (error) {
-      throw new Error("Error fetching sold products");
-    }
-  }
-
-  if (adminIdLoading || soldProductsLoading) {
-    return <FetchLoader />;
-  }
-
-  if (adminIdError || soldProductsError) {
-    return <div>Error: {adminIdError || soldProductsError}</div>;
-  }
+  const hasSoldProducts = adminSoldProducts?.length > 0;
 
   return (
     <div className="adminOrders">
@@ -66,17 +17,24 @@ const AdminSold = () => {
         <GoBack />
         <h1>Sold Products</h1>
         <ul className="adminSold">
-          {adminSoldProducts?.map((product) => (
-            <li key={product._id}>
-              <div>
-                <img src={product.image} alt={product.productName} />
-                <p>{product.productName}</p>
-                <p>{product.price}</p>
-              </div>
-              <p>{product.status}</p>
-              {/* Add other product details here */}
-            </li>
-          ))}
+          {hasSoldProducts ? (
+            adminSoldProducts?.map((product) => (
+              <li key={product._id}>
+                <div>
+                  <img src={product.image} alt={product.productName} />
+                  <p>{product.productName}</p>
+                  <p>{product.price}</p>
+                </div>
+                <p>{product.status}</p>
+                {/* Add other product details here */}
+              </li>
+            ))
+          ) : (
+            <p>
+              You can track your sold/delivered products here, No products sold
+              or successfully delivered yet!
+            </p>
+          )}
         </ul>
       </div>
     </div>

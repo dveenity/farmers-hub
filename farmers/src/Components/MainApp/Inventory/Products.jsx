@@ -4,17 +4,22 @@ import { useQuery } from "react-query";
 import { TbCurrencyNaira } from "react-icons/tb";
 import FetchLoader from "../../Custom/FetchLoader";
 import LoadingSpin from "../../Custom/LoadingSpin";
+import { fetchProducts } from "../../Hooks/useFetch";
+import PropTypes from "prop-types";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const Products = () => {
-  const {
-    data: productList,
-    isLoading,
-    error,
-    refetch,
-  } = useQuery("products", fetchProducts);
+const Products = ({ user }) => {
+  // receive user data props from inventory component
+  useEffect(() => {
+    const name = user[0];
+    const address = user[1];
 
+    setUsername(name);
+    setUserAddress(address);
+  }, [user]);
+
+  const [username, setUsername] = useState("");
   const [modal, setModal] = useState(false);
   const [product, setProduct] = useState(null);
   const [productId, setProductId] = useState(null);
@@ -29,31 +34,28 @@ const Products = () => {
     country: "",
     phone: "",
   });
-  const [username, setUsername] = useState("");
   const [orderButton, setOrderButton] = useState("Order Now");
   const [deleteButton, setDeleteButton] = useState("Delete");
 
+  // Fetch products
+  const {
+    data: productsData,
+    isLoading: productsIsLoading,
+    isError: productsIsError,
+    refetch,
+  } = useQuery("products", fetchProducts);
+
   useEffect(() => {
-    const token = localStorage.getItem("farm-users-new");
+    if (productsIsLoading) {
+      return <FetchLoader />;
+    }
 
-    const fetchUserRole = async () => {
-      try {
-        const response = await axios.get(`${serVer}/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+    if (productsIsError) {
+      return <div>Error fetching data</div>;
+    }
+  }, [productsIsLoading, productsIsError]);
 
-        const { data } = response;
-        setUsername(data.name);
-        setUserAddress(data.address);
-      } catch (error) {
-        console.error("Error fetching user", error);
-      }
-    };
-
-    fetchUserRole();
-  }, []);
+  const hasProducts = productsData?.length > 0;
 
   const handleReadMore = (product) => {
     setModal((prevView) => !prevView);
@@ -127,29 +129,38 @@ const Products = () => {
         <h2>All Products</h2>
         <p>Sorted by recently posted</p>
       </div>
-      {isLoading ? (
-        <FetchLoader />
-      ) : error ? (
-        <div>Error: {error.message}</div>
-      ) : (
-        <ul className="products-list">
-          {productList.map((product, i) => (
-            <li key={i}>
-              <div>
+
+      <ul className="products-list">
+        {hasProducts ? (
+          productsData.map((product) => {
+            let name = product.name;
+            if (name.length > 10) {
+              name = name.split(" ");
+              name = name[0] + " " + name[1];
+            }
+
+            return (
+              <li key={product._id}>
                 <img src={product.image} alt={product.name} />
                 <div>
-                  <h4>{product.name}</h4>
+                  <h4>{name}</h4>
                   <h4>
                     <TbCurrencyNaira />
                     {product.price}
                   </h4>
                 </div>
                 <button onClick={() => handleReadMore(product)}>View</button>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              </li>
+            );
+          })
+        ) : (
+          <p>
+            No products available yet <br />
+            Products posted by farmers will appear here
+          </p>
+        )}
+      </ul>
+
       {modal && (
         <div className="modal-overlay">
           <dialog open className="modal">
@@ -190,14 +201,8 @@ const Products = () => {
   );
 };
 
-async function fetchProducts() {
-  try {
-    const url = `${serVer}/productsFetch`;
-    const response = await axios.post(url);
-    return response.data;
-  } catch (error) {
-    throw new Error("Error fetching products");
-  }
-}
+Products.propTypes = {
+  user: PropTypes.array.isRequired,
+};
 
 export default Products;

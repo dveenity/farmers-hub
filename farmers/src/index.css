@@ -991,42 +991,43 @@ html {
         width: 100%;
         background-color: var(--main-color);
         border-radius: 0.5rem;
+        height: 30vh;
+        min-height: 17rem;
+
+        display: flex;
+        flex-flow: column;
+        justify-content: center;
+        gap: 0.7rem;
+
+        img {
+          height: 8rem;
+          width: 100%;
+          background-color: black;
+          border-radius: 0.4rem;
+        }
 
         > div {
-          display: flex;
-          flex-flow: column;
-          gap: 0.5rem;
-
-          img {
-            height: 20vh;
-            width: 100%;
-            background-color: black;
-            border-radius: 0.4rem;
-          }
-
-          > div {
-            padding: 0 0.3rem;
-            h4 {
-              display: flex;
-              align-items: center;
-              font-weight: bold;
-              color: white;
-              font-size: clamp(1.3rem, 5vw, 1.6rem);
-            }
-          }
-
-          button {
-            border: none;
-            appearance: none;
-            outline: none;
-            padding: 0.5rem 0.2rem;
-            font-size: clamp(1.2rem, 6vw, 1.5rem);
+          padding: 0 0.3rem;
+          h4 {
+            display: flex;
+            align-items: center;
             font-weight: bold;
-            border-radius: 1rem;
-            background-color: var(--bg-color-grid);
             color: white;
-            margin: 0 0.5rem 0.4rem;
+            font-size: clamp(1.3rem, 5vw, 1.6rem);
           }
+        }
+
+        button {
+          border: none;
+          appearance: none;
+          outline: none;
+          padding: 0.5rem 0.2rem;
+          font-size: clamp(1.2rem, 6vw, 1.5rem);
+          font-weight: bold;
+          border-radius: 1rem;
+          background-color: var(--bg-color-grid);
+          color: white;
+          margin: 0 0.5rem 0.4rem;
         }
       }
     }

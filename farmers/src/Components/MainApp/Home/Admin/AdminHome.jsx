@@ -8,50 +8,43 @@ import {
   fetchAdminDeliveredOrders,
   fetchAdminOrders,
   fetchProducts,
-  fetchUser,
 } from "../../../Hooks/useFetch";
+import PropTypes from "prop-types";
 
-const AdminHome = () => {
-  // fetch admin details
-  const { data, isLoading, isError } = useQuery("adminData", fetchUser);
+const AdminHome = ({ user }) => {
+  const { name } = user;
 
-  // fetch products
+  // Fetch products
   const {
     data: productsData,
     isLoading: productsIsLoading,
     isError: productsIsError,
   } = useQuery("products", fetchProducts);
 
-  // fetch admin Orders
+  // Fetch admin Orders
   const {
     data: ordersData,
     isLoading: ordersIsLoading,
     isError: ordersIsError,
-  } = useQuery("adminOrders", () => fetchAdminOrders(username));
+  } = useQuery("adminOrders", () => fetchAdminOrders(name));
 
-  // fetch admin delivered orders
+  // Fetch admin delivered orders
   const {
     data: deliveredOrdersData,
     isLoading: deliveredOrdersIsLoading,
     isError: deliveredOrdersIsError,
-  } = useQuery("deliveredOrders", () => fetchAdminDeliveredOrders(username));
+  } = useQuery("deliveredOrders", () => fetchAdminDeliveredOrders(name));
 
-  if (
-    isLoading ||
-    productsIsLoading ||
-    ordersIsLoading ||
-    deliveredOrdersIsLoading
-  ) {
+  if (productsIsLoading || ordersIsLoading || deliveredOrdersIsLoading) {
     return <FetchLoader />;
   }
-  if (isError || productsIsError || ordersIsError || deliveredOrdersIsError) {
+
+  if (productsIsError || ordersIsError || deliveredOrdersIsError) {
     return <div>Error fetching data</div>;
   }
 
-  const { username } = data;
-
   const filteredProducts = productsData.filter(
-    (product) => product.username === username
+    (product) => product.username === name
   );
 
   const filteredProductsLength = filteredProducts?.length;
@@ -63,8 +56,7 @@ const AdminHome = () => {
   // create activities object array and map into dom
   const activitiesAll = [
     { name: "Learning Hub", link: "/tutorial" },
-    { name: "View your Products", link: "/adminInventory" },
-    { name: "View your Activities", link: "/adminInventory" },
+    { name: "View your Inventory", link: "/adminInventory" },
     { name: "View New Orders", link: "/adminOrders" },
     { name: "View Sold", link: "/soldOrder" },
     { name: "Purchases", link: "/purchases" },
@@ -73,7 +65,7 @@ const AdminHome = () => {
 
   const activitiesOut = activitiesAll.map((activity, i) => (
     <li key={i}>
-      <Link to={activity.link}>
+      <Link to={activity.link} state={{ name }}>
         {activity.name}
         <BsArrowRight />
       </Link>
@@ -86,7 +78,7 @@ const AdminHome = () => {
         <div>
           <ul>
             <li>
-              <Link to="/soldOrder">
+              <Link to="/soldOrder" state={{ deliveredOrdersData }}>
                 <div>
                   <strong>Total Sales</strong>
                   <FaChartLine className="dash-icons" />
@@ -95,7 +87,7 @@ const AdminHome = () => {
               </Link>
             </li>
             <li>
-              <Link to="/adminOrders">
+              <Link to="/adminOrders" state={{ name }}>
                 <div>
                   <strong>New Orders</strong>
                   <HiInboxArrowDown className="dash-icons" />
@@ -140,6 +132,10 @@ const AdminHome = () => {
       </div>
     </div>
   );
+};
+
+AdminHome.propTypes = {
+  user: PropTypes.object.isRequired,
 };
 
 export default AdminHome;
