@@ -7,15 +7,14 @@ import { SiUnitednations } from "react-icons/si";
 import { FaHome, FaPhone, FaUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import LoadingSpin from "../../Custom/LoadingSpin";
-import PropTypes from "prop-types";
+import { useQuery } from "react-query";
+import { fetchUser } from "../../Hooks/useFetch";
+import FetchLoader from "../../Custom/FetchLoader";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
+const token = localStorage.getItem("farm-users-new");
 
-const Profile = ({ user }) => {
-  // destructing data from fetch
-  const { name, role, email, image, address } = user[0];
-  const { refetch } = user[1];
-
+const Profile = () => {
   const [button, setButton] = useState("Save");
   const [addressNull, setAddressNull] = useState("");
   const [editMode, setEditMode] = useState(false);
@@ -26,7 +25,16 @@ const Profile = ({ user }) => {
   const { register, handleSubmit, formState, reset } = form;
   const { errors, isSubmitting } = formState;
 
-  const token = localStorage.getItem("farm-users-new");
+  const { data, isLoading, isError, refetch } = useQuery("user", fetchUser);
+
+  if (isLoading) {
+    return <FetchLoader />;
+  }
+  if (isError) {
+    return <div>Error Fetching Data</div>;
+  }
+
+  const { name, role, email, image, address } = data;
 
   // address
   const userStreet = address ? address.street + "," : "";
@@ -245,10 +253,6 @@ const Profile = ({ user }) => {
       </div>
     </div>
   );
-};
-
-Profile.propTypes = {
-  user: PropTypes.array.isRequired,
 };
 
 export default Profile;

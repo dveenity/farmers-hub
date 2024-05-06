@@ -5,19 +5,21 @@ import FetchLoader from "../../Custom/FetchLoader";
 import { FcIdea } from "react-icons/fc";
 import { TbCurrencyNaira } from "react-icons/tb";
 import LoadingSpin from "../../Custom/LoadingSpin";
-import PropTypes from "prop-types";
-import { fetchUserOrders } from "../../Hooks/useFetch";
+import { fetchUser, fetchUserOrders } from "../../Hooks/useFetch";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const Orders = ({ user }) => {
-  const name = user[0];
-
+const Orders = () => {
   const [modal, setModal] = useState(false);
   const [orderIdToDelete, setOrderIdToDelete] = useState(null);
   const [cancelButton, setCancelButton] = useState("Yes");
 
   const token = localStorage.getItem("farm-users-new");
+
+  // fetch user
+  const { data } = useQuery("user", fetchUser);
+
+  const { name } = data;
 
   //  fetch orders
   const {
@@ -126,10 +128,6 @@ const Orders = ({ user }) => {
       )}
     </div>
   );
-};
-
-Orders.propTypes = {
-  user: PropTypes.array.isRequired,
 };
 
 export default Orders;
