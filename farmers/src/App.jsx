@@ -58,6 +58,7 @@ function App() {
       <Suspense fallback={<FetchLoader />}>
         <Routes>
           <Route
+            exact
             path="/"
             element={!user ? <Genesis /> : <Navigate to="/home" />}
           />
@@ -69,37 +70,57 @@ function App() {
             path="/login"
             element={!user ? <Login /> : <Navigate to="/home" />}
           />
-          <Route exact path="/home" element={user ? <Home /> : <Login />} />
+          <Route
+            path="/home"
+            element={user ? <Home /> : <Navigate to="/login" />}
+          />
           <Route
             path="/addProduct"
-            element={user ? <AddProduct /> : <Login />}
+            element={user ? <AddProduct /> : <Navigate to="/login" />}
           />
           <Route
             path="/addActivity"
-            element={user ? <AddActivity /> : <Login />}
+            element={user ? <AddActivity /> : <Navigate to="/login" />}
           />
-          <Route path="/tutorial" element={user ? <Tutorial /> : <Login />} />
-          <Route path="/inventory" element={user ? <Inventory /> : <Login />} />
+          <Route
+            path="/tutorial"
+            element={user ? <Tutorial /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/inventory"
+            element={user ? <Inventory /> : <Navigate to="/login" />}
+          />
           <Route
             path="/adminInventory"
-            element={user ? <AdminInventory /> : <Login />}
+            element={user ? <AdminInventory /> : <Navigate to="/login" />}
           />
           <Route
             path="/adminOrders"
-            element={user ? <AdminOrders /> : <Login />}
+            element={user ? <AdminOrders /> : <Navigate to="/login" />}
           />
           <Route
-            exact
             path="/soldOrder"
-            element={user ? <AdminSold /> : <Login />}
+            element={user ? <AdminSold /> : <Navigate to="/login" />}
           />
-          <Route path="/purchases" element={user ? <Purchases /> : <Login />} />
-          <Route path="/chat" element={user ? <Chat /> : <Login />} />
-          <Route path="/orders" element={user ? <Orders /> : <Login />} />
-          <Route path="/profile" element={user ? <Profile /> : <Login />} />
+          <Route
+            path="/purchases"
+            element={user ? <Purchases /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/chat"
+            element={user ? <Chat /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/orders"
+            element={user ? <Orders /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/profile"
+            element={user ? <Profile /> : <Navigate to="/login" />}
+          />
           <Route
             path="/calculator"
-            element={user ? <Calculator /> : <Login />}
+            element={user ? <Calculator /> : <Navigate to="/login" />}
           />
         </Routes>
       </Suspense>
