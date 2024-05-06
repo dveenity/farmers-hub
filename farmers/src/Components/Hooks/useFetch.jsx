@@ -36,7 +36,24 @@ export const fetchProducts = async () => {
 // route to fetch activities
 export const fetchActivities = async () => {
   const url = `${serVer}/activitiesFetch`;
-  const response = await fetch(url, null, {
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
+  }
+
+  return response.json();
+};
+
+// route to fetch user orders
+export const fetchUserOrders = async (name) => {
+  const url = `${serVer}/ordersUser/${name}`;
+
+  const response = await fetch(url, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

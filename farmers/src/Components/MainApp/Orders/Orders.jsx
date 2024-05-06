@@ -5,54 +5,28 @@ import FetchLoader from "../../Custom/FetchLoader";
 import { FcIdea } from "react-icons/fc";
 import { TbCurrencyNaira } from "react-icons/tb";
 import LoadingSpin from "../../Custom/LoadingSpin";
+import PropTypes from "prop-types";
+import { fetchUserOrders } from "../../Hooks/useFetch";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const Orders = () => {
+const Orders = ({ user }) => {
+  const name = user[0];
+
   const [modal, setModal] = useState(false);
   const [orderIdToDelete, setOrderIdToDelete] = useState(null);
   const [cancelButton, setCancelButton] = useState("Yes");
 
   const token = localStorage.getItem("farm-users-new");
 
-  // Fetch user data
-  const fetchUser = async () => {
-    const url = `${serVer}/home`;
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  };
-
-  // Fetch orders
-  const fetchOrders = async (name) => {
-    try {
-      const url = `${serVer}/ordersUser/${name}`;
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error("Error fetching orders");
-    }
-  };
-
-  const {
-    data: userData,
-    isLoading: isUserLoading,
-    isError: isUserError,
-  } = useQuery("user", fetchUser);
+  //  fetch orders
   const {
     data: ordersData,
     isLoading: isOrdersLoading,
     isError: isOrdersError,
     refetch: refetchOrders,
-  } = useQuery("orders", () => fetchOrders(userData?.name), {
-    enabled: !!userData?.name,
+  } = useQuery("orders", () => fetchUserOrders(name), {
+    enabled: !!name,
   });
 
   const deleteOrderMutation = useMutation(
@@ -92,8 +66,8 @@ const Orders = () => {
     }
   };
 
-  if (isUserLoading || isOrdersLoading) return <FetchLoader />;
-  if (isUserError || isOrdersError) return <div>Error fetching data</div>;
+  if (isOrdersLoading) return <FetchLoader />;
+  if (isOrdersError) return <div>Error fetching data</div>;
 
   const orders = ordersData || [];
 
@@ -152,6 +126,10 @@ const Orders = () => {
       )}
     </div>
   );
+};
+
+Orders.propTypes = {
+  user: PropTypes.array.isRequired,
 };
 
 export default Orders;

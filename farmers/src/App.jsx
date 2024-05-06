@@ -6,6 +6,8 @@ import Signup from "./Components/Authentication/Signup";
 import Login from "./Components/Authentication/Login";
 import Navigation from "./Components/Custom/Navigation";
 import FetchLoader from "./Components/Custom/FetchLoader";
+import { fetchUser } from "./Components/Hooks/useFetch";
+import { useQuery } from "react-query";
 
 const Home = lazy(() => import("./Components/MainApp/Home/Home"));
 const Inventory = lazy(() =>
@@ -53,6 +55,23 @@ function App() {
   const showNavigation =
     showNavigationRoutes.includes(location.pathname) && user;
 
+  // cache fetched data with react query
+  const {
+    data: userData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery("user", fetchUser);
+
+  if (isLoading) {
+    return <FetchLoader />;
+  }
+  if (isError) {
+    return <div>Error Fetching Data</div>;
+  }
+
+  const { name } = userData;
+
   return (
     <>
       <Suspense fallback={<FetchLoader />}>
@@ -79,8 +98,11 @@ function App() {
           <Route exact path="/soldOrder" element={<AdminSold />} />
           <Route path="/purchases" element={<Purchases />} />
           <Route path="/chat" element={<Chat />} />
-          <Route path="/orders" element={user && <Orders />} />
-          <Route path="/profile" element={user && <Profile />} />
+          <Route path="/orders" element={user && <Orders user={[name]} />} />
+          <Route
+            path="/profile"
+            element={user && <Profile user={[userData, refetch]} />}
+          />
           <Route path="/calculator" element={user && <Calculator />} />
         </Routes>
       </Suspense>

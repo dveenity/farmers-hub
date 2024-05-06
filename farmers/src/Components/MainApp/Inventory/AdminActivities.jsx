@@ -2,10 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useQuery } from "react-query";
 import FetchLoader from "../../Custom/FetchLoader";
+import PropTypes from "prop-types";
+import { fetchActivities } from "../../Hooks/useFetch";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const AdminActivities = () => {
+const AdminActivities = ({ user }) => {
+  // Access data passed via props from admin Inventory component
+  const { name, username } = user;
+
   const [modal, setModal] = useState(false);
   const [activityImage, setActivityImage] = useState(null);
   const [activityName, setActivityName] = useState(null);
@@ -14,30 +19,20 @@ const AdminActivities = () => {
   const [activityId, setActivityId] = useState(null);
   const [product, setProduct] = useState(null);
 
-  const token = localStorage.getItem("farm-users-new");
-
-  const {
-    data: userData,
-    isLoading: userLoading,
-    error: userError,
-  } = useQuery("user", fetchUser, {
-    enabled: !!token,
-  });
-
   const {
     data: activityList,
     isLoading: activityLoading,
-    error: activityError,
+    isError: activityError,
     refetch: refetchActivities,
   } = useQuery("activities", fetchActivities, {
-    enabled: !!userData,
+    enabled: !!user,
   });
 
   useEffect(() => {
-    if (userData) {
+    if (user) {
       refetchActivities(); // Refetch activities once user data is available
     }
-  }, [userData, refetchActivities]);
+  }, [user, refetchActivities]);
 
   const handleActivity = (activity) => {
     setModal((prevView) => !prevView);
@@ -66,18 +61,21 @@ const AdminActivities = () => {
     }
   };
 
-  if (userLoading || activityLoading) {
+  if (activityLoading) {
     return <FetchLoader />;
   }
 
-  if (userError || activityError) {
-    return <div>Error: {userError || activityError}</div>;
+  if (activityError) {
+    return <div>Error: {activityError}</div>;
   }
 
-  // Filter activityList based on username
+  // Filter activityList based on name
   const filteredActivity = activityList?.filter(
-    (activity) => activity.username === userData.name
+    (activity) => activity.username === name
   );
+
+  // check if there is activity
+  const hasActivities = filteredActivity?.length > 0;
 
   return (
     <div className="activities">
@@ -86,17 +84,24 @@ const AdminActivities = () => {
         <p>Sorted by recently posted</p>
       </div>
       <ul className="activitiesList">
-        {filteredActivity.map((activity, i) => (
-          <li key={i}>
-            <img src={activity.image} alt={activity.name} />
-            <div>
-              <h3>{activity.name}</h3>
-              <button onClick={() => handleActivity(activity)}>
-                Read more
-              </button>
-            </div>
-          </li>
-        ))}
+        {hasActivities ? (
+          filteredActivity.map((activity, i) => (
+            <li key={i}>
+              <img src={activity.image} alt={activity.name} />
+              <div>
+                <h3>{activity.name}</h3>
+                <button onClick={() => handleActivity(activity)}>
+                  Read more
+                </button>
+              </div>
+            </li>
+          ))
+        ) : (
+          <div>
+            You have not posted an activity yet <br />
+            Activities you post will appear here and you can manage them
+          </div>
+        )}
       </ul>
       {modal && (
         <div className="modal-overlay">
@@ -111,13 +116,11 @@ const AdminActivities = () => {
                   <p>{activityDescription}</p>
                   <strong>
                     Posted by:{" "}
-                    {userData.username === activityOwner
-                      ? "You"
-                      : activityOwner}
+                    {username === activityOwner ? "You" : activityOwner}
                   </strong>
                 </div>
                 <div>
-                  {userData.name === activityOwner && (
+                  {name === activityOwner && (
                     <button onClick={handleDelete}>Delete</button>
                   )}
                   <button onClick={handleActivity}>Close</button>
@@ -132,32 +135,8 @@ const AdminActivities = () => {
   );
 };
 
-async function fetchUser() {
-  try {
-    const token = localStorage.getItem("farm-users-new");
-    const response = await axios.get(`${serVer}/home`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error("Error fetching user");
-  }
-}
-
-async function fetchActivities() {
-  try {
-    const token = localStorage.getItem("farm-users-new");
-    const response = await axios.post(`${serVer}/activitiesFetch`, null, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error("Error fetching activities");
-  }
-}
+AdminActivities.propTypes = {
+  user: PropTypes.string.isRequired,
+};
 
 export default AdminActivities;

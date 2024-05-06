@@ -4,21 +4,21 @@ import { useQuery } from "react-query";
 import { TbCurrencyNaira } from "react-icons/tb";
 import FetchLoader from "../../Custom/FetchLoader";
 import LoadingSpin from "../../Custom/LoadingSpin";
+import { fetchProducts } from "../../Hooks/useFetch";
+import PropTypes from "prop-types";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const AdminProducts = () => {
+const AdminProducts = ({ user }) => {
+  // Access data passed via props from admin Inventory component
+  const { name } = user;
+
   const {
     data: productList,
     isLoading: productsLoading,
-    error: productsError,
+    isError: productsError,
     refetch: refetchProducts,
   } = useQuery("products", fetchProducts);
-  const {
-    data: userData,
-    isLoading: userLoading,
-    error: userError,
-  } = useQuery("userRole", fetchUserRole);
 
   const [modal, setModal] = useState(false);
   const [product, setProduct] = useState(null);
@@ -32,10 +32,8 @@ const AdminProducts = () => {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    if (userData) {
-      setUsername(userData.name);
-    }
-  }, [userData]);
+    setUsername(name);
+  }, [name]);
 
   const handleReadMore = (product) => {
     setModal((prevView) => !prevView);
@@ -68,18 +66,20 @@ const AdminProducts = () => {
     }
   };
 
-  if (productsLoading || userLoading) {
+  if (productsLoading) {
     return <FetchLoader />;
   }
 
-  if (productsError || userError) {
-    return <div>Error: {productsError || userError}</div>;
+  if (productsError) {
+    return <div>Error: {productsError}</div>;
   }
 
   // Filter productList based on username
   const filteredProducts = productList?.filter(
     (product) => product.username === username
   );
+
+  const hasFilteredProducts = filteredProducts.length > 0;
 
   return (
     <div className="products">
@@ -88,9 +88,9 @@ const AdminProducts = () => {
         <p>Sorted by recently posted</p>
       </div>
       <ul className="products-list">
-        {filteredProducts.map((product, i) => (
-          <li key={i}>
-            <div>
+        {hasFilteredProducts ? (
+          filteredProducts.map((product) => (
+            <li key={product._id}>
               <img src={product.image} alt={product.name} />
               <div>
                 <h4>{product.name}</h4>
@@ -100,9 +100,15 @@ const AdminProducts = () => {
                 </h4>
               </div>
               <button onClick={() => handleReadMore(product)}>View</button>
-            </div>
-          </li>
-        ))}
+            </li>
+          ))
+        ) : (
+          <div>
+            You have not added any product yet
+            <br />
+            Add a product to view it here
+          </div>
+        )}
       </ul>
       {modal && (
         <div className="modal-overlay">
@@ -141,28 +147,8 @@ const AdminProducts = () => {
   );
 };
 
-async function fetchProducts() {
-  try {
-    const url = `${serVer}/productsFetch`;
-    const response = await axios.post(url);
-    return response.data;
-  } catch (error) {
-    throw new Error("Error fetching products");
-  }
-}
-
-async function fetchUserRole() {
-  try {
-    const token = localStorage.getItem("farm-users-new");
-    const response = await axios.get(`${serVer}/home`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error("Error fetching user");
-  }
-}
+AdminProducts.propTypes = {
+  user: PropTypes.string.isRequired,
+};
 
 export default AdminProducts;

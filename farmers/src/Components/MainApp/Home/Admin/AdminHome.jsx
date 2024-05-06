@@ -96,7 +96,7 @@ const AdminHome = ({ user }) => {
               </Link>
             </li>
             <li>
-              <Link to="/adminInventory">
+              <Link to="/adminInventory" state={{ user }}>
                 <div>
                   <strong>Inventory</strong>
                   <FaStore className="dash-icons" />

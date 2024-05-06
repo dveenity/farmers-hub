@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { isError, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import FetchLoader from "../../Custom/FetchLoader";
 import PropTypes from "prop-types";
 import { fetchActivities } from "../../Hooks/useFetch";

@@ -4,8 +4,16 @@ import AdminActivities from "./AdminActivities";
 import { FaCartShopping } from "react-icons/fa6";
 import { RxActivityLog } from "react-icons/rx";
 import { FcIdea } from "react-icons/fc";
+import { useLocation } from "react-router-dom";
 
 const AdminInventory = () => {
+  // Access data passed via link from adminHome component
+  const location = useLocation();
+
+  const { state } = location;
+  const { user } = state;
+  const { name } = user;
+
   const [isProductsView, setIsProductsView] = useState(true);
   const [isActivityView, setIsActivityView] = useState(false);
 
@@ -39,8 +47,8 @@ const AdminInventory = () => {
       </div>
 
       {/* Render Products or Activities based on the selected view */}
-      {isProductsView && <AdminProducts />}
-      {isActivityView && <AdminActivities />}
+      {isProductsView && <AdminProducts user={name} />}
+      {isActivityView && <AdminActivities user={user} />}
     </div>
   );
 };

@@ -7,18 +7,17 @@ import { SiUnitednations } from "react-icons/si";
 import { FaHome, FaPhone, FaUser } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import LoadingSpin from "../../Custom/LoadingSpin";
-import FetchLoader from "../../Custom/FetchLoader";
-
-// caching with react query
-import { useQuery } from "react-query";
+import PropTypes from "prop-types";
 
 const serVer = `https://farmers-hub-backend.vercel.app`;
 
-const Profile = () => {
+const Profile = ({ user }) => {
+  // destructing data from fetch
+  const { name, role, email, image, address } = user[0];
+  const { refetch } = user[1];
+
   const [button, setButton] = useState("Save");
-
   const [addressNull, setAddressNull] = useState("");
-
   const [editMode, setEditMode] = useState(false);
   const [resultMessage, setResultMessage] = useState("");
 
@@ -28,26 +27,6 @@ const Profile = () => {
   const { errors, isSubmitting } = formState;
 
   const token = localStorage.getItem("farm-users-new");
-
-  // fetch user data
-  const fetchUser = async () => {
-    const url = `${serVer}/home`;
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  };
-  // cache fetched data with react query
-  const { data, isLoading, isError, refetch } = useQuery("user", fetchUser);
-
-  // loading screen while fetching
-  if (isLoading) return <FetchLoader />;
-  if (isError) return <div>Error fetching user</div>;
-
-  // destructing data from fetch
-  const { name, role, email, image, address } = data;
 
   // address
   const userStreet = address ? address.street + "," : "";
@@ -266,6 +245,10 @@ const Profile = () => {
       </div>
     </div>
   );
+};
+
+Profile.propTypes = {
+  user: PropTypes.array.isRequired,
 };
 
 export default Profile;
