@@ -56,7 +56,6 @@ const AdminHome = ({ user }) => {
   // create activities object array and map into dom
   const activitiesAll = [
     { name: "Learning Hub", link: "/tutorial" },
-    { name: "Purchases", link: "/purchases" },
     { name: "Estimator", link: "/calculator" },
   ];
 
